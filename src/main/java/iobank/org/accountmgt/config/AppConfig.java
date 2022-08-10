@@ -48,7 +48,7 @@ public class AppConfig implements WebMvcConfigurer {
                         "GET", "POST", "PUT", "DELETE", "PATCH")
                 .allowedOrigins("*")
                 .allowCredentials(true)
-                .allowedHeaders("Authorization", "Cache-Control", "Content-Type", "platform");
+                .allowedHeaders("Authorization", "Cache-Control", "Content-Type", "privateKey");
 
     }
 }
