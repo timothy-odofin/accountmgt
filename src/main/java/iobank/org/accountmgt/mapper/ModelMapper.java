@@ -4,9 +4,7 @@ import iobank.org.accountmgt.enums.AccountType;
 import iobank.org.accountmgt.enums.CurrencyType;
 import iobank.org.accountmgt.model.request.AccountRequest;
 import iobank.org.accountmgt.model.request.CustomerRequest;
-import iobank.org.accountmgt.model.response.Accounts;
-import iobank.org.accountmgt.model.response.Customer;
-import iobank.org.accountmgt.model.response.CustomerResponse;
+import iobank.org.accountmgt.model.response.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +24,35 @@ public class ModelMapper {
                 .phone(mapFrom.getPhone())
                 .build();
 
+    }
+    public static TransactionResponse mapToTransaction(Transactions mapFrom){
+        if(mapFrom==null)
+            return null;
+        return TransactionResponse.builder()
+                .amount(mapFrom.getAmount())
+                .category(mapFrom.getCategory())
+                .channel(mapFrom.getChannel())
+                .transactionDate(mapFrom.getTransactionDate())
+                .narration(mapFrom.getNarration())
+                .accountNumber(mapFrom.getAccountNumber())
+                .build();
+    }
+   public static AccountsResponse mapToAccountsResponse(Accounts mapFrom){
+        if(mapFrom==null)
+            return null;
+        return AccountsResponse.builder()
+                .balance(mapFrom.getBalance())
+                .accountType(mapFrom.getAccountType())
+                .currency(mapFrom.getCurrency())
+                .isActive(mapFrom.getIsActive())
+                .dateOpened(mapFrom.getDateOpened())
+                .accountNumber(mapFrom.getAccountNumber())
+                .lastModified(mapFrom.getLastModified())
+                .build();
+    }
+
+    public static List<TransactionResponse> mapToTransaction(List<Transactions> mapFrom){
+        return mapFrom.stream().filter(transaction->transaction!=null).map(transaction -> mapToTransaction(transaction)).collect(Collectors.toList());
     }
     public static List<CustomerResponse> mapToCustomerList(List<Customer> mapFrom){
         return mapFrom.stream().filter(customer->customer!=null).map(customer -> mapToCustomer(customer)).collect(Collectors.toList());

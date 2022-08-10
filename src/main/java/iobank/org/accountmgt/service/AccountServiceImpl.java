@@ -7,10 +7,7 @@ import iobank.org.accountmgt.mapper.ModelMapper;
 import iobank.org.accountmgt.model.request.AccountRequest;
 import iobank.org.accountmgt.model.request.BlockAccountRequest;
 import iobank.org.accountmgt.model.request.CustomerRequest;
-import iobank.org.accountmgt.model.response.Accounts;
-import iobank.org.accountmgt.model.response.ApiResponse;
-import iobank.org.accountmgt.model.response.Customer;
-import iobank.org.accountmgt.model.response.CustomerResponse;
+import iobank.org.accountmgt.model.response.*;
 import iobank.org.accountmgt.storage.LocalStorage;
 import iobank.org.accountmgt.validation.AppValidator;
 import lombok.RequiredArgsConstructor;
@@ -105,6 +102,11 @@ public class AccountServiceImpl implements  AccountService{
 
     @Override
     public ApiResponse retrieveAccount(String accountNumber,String customerPhone) {
-        return null;
+        Optional<Accounts> accountsOptional= localStorage.findAccountByNumber(accountNumber, customerPhone);
+        if(accountsOptional.isEmpty())
+            throw new RecordNotFoundException(ACCOUNT_NOT_FOUND);
+        AccountsResponse accountsResponse = ModelMapper.mapToAccountsResponse(accountsOptional.get());
+        accountsResponse.setTransactions(localStorage.findTransactionByAccountNumber(accountNumber));
+        return new ApiResponse(SUCCESS,OKAY,accountsResponse);
     }
 }
