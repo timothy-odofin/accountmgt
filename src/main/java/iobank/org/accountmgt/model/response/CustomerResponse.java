@@ -9,7 +9,8 @@ import java.util.LinkedHashMap;
 @Data
 @ToString
 public class CustomerResponse {
-    private Integer customerNo;
+    private Integer id;
+    private String customerNo;
     private String name;
     private String phone;
     private String email;
