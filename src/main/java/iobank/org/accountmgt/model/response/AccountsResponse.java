@@ -1,6 +1,7 @@
 package iobank.org.accountmgt.model.response;
 
 import iobank.org.accountmgt.enums.AccountType;
+import iobank.org.accountmgt.enums.CurrencyType;
 import lombok.Data;
 import lombok.ToString;
 
@@ -13,6 +14,6 @@ public class AccountsResponse {
     private AccountType accountType;
     private LocalDateTime dateOpened;
     private Double balance;
-    private String currency;
+    private CurrencyType currency;
 
 }

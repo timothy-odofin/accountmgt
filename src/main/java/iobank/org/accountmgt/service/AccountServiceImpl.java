@@ -2,10 +2,12 @@ package iobank.org.accountmgt.service;
 
 import iobank.org.accountmgt.exception.BadRequestException;
 import iobank.org.accountmgt.exception.DuplicationRecordException;
+import iobank.org.accountmgt.exception.RecordNotFoundException;
 import iobank.org.accountmgt.mapper.ModelMapper;
 import iobank.org.accountmgt.model.request.AccountRequest;
 import iobank.org.accountmgt.model.request.BlockAccountRequest;
 import iobank.org.accountmgt.model.request.CustomerRequest;
+import iobank.org.accountmgt.model.response.AccountsResponse;
 import iobank.org.accountmgt.model.response.ApiResponse;
 import iobank.org.accountmgt.model.response.CustomerResponse;
 import iobank.org.accountmgt.storage.LocalStorage;
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.Optional;
 
 import static iobank.org.accountmgt.utils.AppCode.CREATED;
@@ -25,6 +28,7 @@ import static iobank.org.accountmgt.utils.MessageUtil.*;
 @Slf4j
 public class AccountServiceImpl implements  AccountService{
     private final LocalStorage localStorage;
+
 
     @Override
     public ApiResponse addCustomer(CustomerRequest payload) {
@@ -42,6 +46,17 @@ public class AccountServiceImpl implements  AccountService{
 
     @Override
     public ApiResponse addAccountToCustomer(AccountRequest payload) {
+        String validationResult = AppValidator.isValid(payload);
+        if(!validationResult.isBlank())
+            throw new BadRequestException(validationResult);
+        Optional<CustomerResponse> customerResponseOptional = localStorage.findCustomer(payload.getCustomerPhone());
+        if(customerResponseOptional.isEmpty())
+            throw new RecordNotFoundException(RECORD_NOT_FOUND);
+        if(localStorage.isAccountExists(payload))
+            throw new DuplicationRecordException(DUPLICATE_ACCOUNT);
+        CustomerResponse customerResponse = customerResponseOptional.get();
+        LinkedHashMap<String, AccountsResponse> accountMap =customerResponse.getAccountMap();
+
         return null;
     }
 

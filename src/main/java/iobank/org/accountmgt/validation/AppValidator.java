@@ -2,6 +2,7 @@ package iobank.org.accountmgt.validation;
 
 import iobank.org.accountmgt.enums.AccountType;
 import iobank.org.accountmgt.enums.ChannelType;
+import iobank.org.accountmgt.enums.CurrencyType;
 import iobank.org.accountmgt.enums.TransactionType;
 import iobank.org.accountmgt.model.request.AccountRequest;
 import iobank.org.accountmgt.model.request.BlockAccountRequest;
@@ -42,10 +43,12 @@ public class AppValidator {
 
     public static String isValid(AccountRequest payload){
         ArrayList<String> errorList = new ArrayList<>();
-        if(!StringUtils.isNumeric(payload.getCustomerNo()))
+        if(!StringUtils.isNumeric(payload.getCustomerPhone()))
             errorList.add(INVALID_CUSTOMER_NUMBER);
          else if(AccountType.valueOfName(payload.getAccountType())==null)
              errorList.add(INVALID_ACCOUNT_TYPE);
+        else if(CurrencyType.valueOfName(payload.getCurrency())==null)
+            errorList.add(INVALID_CURRENCY);
         return errorList.isEmpty()?"":String.join(",", errorList);
     }
     public static String isValid(CustomerRequest payload) {

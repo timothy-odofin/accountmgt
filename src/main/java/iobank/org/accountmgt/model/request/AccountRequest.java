@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class AccountRequest {
-    private String customerNo;
+    private String customerPhone;
+    private String currency;
     private String accountType;
 }
