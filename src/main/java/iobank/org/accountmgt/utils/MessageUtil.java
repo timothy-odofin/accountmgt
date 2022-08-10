@@ -7,6 +7,7 @@ public class MessageUtil {
     public  final static String INVALID_TRANSACTION_AMOUNT = "Invalid transaction amount";
     public  final static String INVALID_TRANSACTION_CHANNEL = "Invalid transaction channel";
     public  final static String INVALID_TRANSACTION_TYPE= "Invalid transaction type";
+    public  final static String INVALID_ACCOUNT_STATUS= "Invalid account status";
     public  final static String INVALID_ACCOUNT_TYPE = "Invalid customer account type";
     public  final static String INVALID_EMAIL = "Invalid customer email";
     public  final static String INVALID_CONTACT_PHONE = "Invalid contact mobile";

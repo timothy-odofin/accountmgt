@@ -4,6 +4,7 @@ import iobank.org.accountmgt.enums.AccountType;
 import iobank.org.accountmgt.enums.ChannelType;
 import iobank.org.accountmgt.enums.TransactionType;
 import iobank.org.accountmgt.model.request.AccountRequest;
+import iobank.org.accountmgt.model.request.BlockAccountRequest;
 import iobank.org.accountmgt.model.request.CustomerRequest;
 import iobank.org.accountmgt.model.request.TransactionRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +16,17 @@ import static iobank.org.accountmgt.utils.MessageUtil.*;
 
 public class AppValidator {
 
+
+    public static String isValid(BlockAccountRequest payload){
+        ArrayList<String> errorList = new ArrayList<>();
+        if(!StringUtils.isNumeric(payload.getAccountNumber()))
+            errorList.add(INVALID_CUSTOMER_ACCOUNT_NUMBER);
+        if(payload.getStatus()==null)
+            errorList.add(INVALID_ACCOUNT_STATUS);
+        else if (!validatePhone(payload.getCustomerPhone()))
+            errorList.add(INVALID_CONTACT_PHONE);
+        return errorList.isEmpty()?"":String.join(",", errorList);
+    }
     public static String isValid(TransactionRequest payload){
         ArrayList<String> errorList = new ArrayList<>();
         if(!StringUtils.isNumeric(payload.getAccountNumber()))
