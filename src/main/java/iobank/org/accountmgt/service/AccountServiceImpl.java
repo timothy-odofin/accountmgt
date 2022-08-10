@@ -31,7 +31,6 @@ import static iobank.org.accountmgt.utils.MessageUtil.*;
 public class AccountServiceImpl implements  AccountService{
     private final LocalStorage localStorage;
 
-
     @Override
     public ApiResponse addCustomer(CustomerRequest payload) {
         String validationResult = AppValidator.isValid(payload);
@@ -93,7 +92,7 @@ public class AccountServiceImpl implements  AccountService{
 
     @Override
     public ApiResponse listAllAccounts() {
-        return null;
+        return new ApiResponse(SUCCESS,OKAY,localStorage.findAllAccount());
     }
 
     @Override

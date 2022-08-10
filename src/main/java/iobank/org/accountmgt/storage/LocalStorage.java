@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import static iobank.org.accountmgt.utils.MessageUtil.CUSTOMER_NOT_FOUND;
 
@@ -81,6 +82,17 @@ public boolean isAccountExists(AccountRequest payload){
     }
     return false;
 }
+private List<Accounts> getAccount(Collection<Accounts> accounts){
+        return new ArrayList<>(accounts);
+}
+    public List<Accounts> findAllAccount(){
+        if(customerStore.isEmpty())
+            return new ArrayList<>();
+      List<Accounts> accountsList= new ArrayList<>();
+      customerStore.values().stream().filter(customer->customer.getAccountMap()!=null && !customer.getAccountMap().isEmpty())
+              .map(c->c.getAccountMap().values()).forEach(accountsList::addAll);
+      return accountsList;
+    }
 public List<Accounts> listAccount(String customerPhone){
         Optional<Customer> customerOptional = findCustomer(customerPhone);
         if(customerOptional.isEmpty())
