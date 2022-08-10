@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 @ToString
-public class AccountsResponse {
+public class Accounts {
     private String accountNumber;
     private AccountType accountType;
     private LocalDateTime dateOpened;

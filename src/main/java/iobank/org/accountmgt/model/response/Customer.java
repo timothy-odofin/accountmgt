@@ -1,15 +1,15 @@
 package iobank.org.accountmgt.model.response;
 
-import lombok.*;
+import lombok.Data;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @ToString
-@Builder
-public class CustomerResponse {
+public class Customer {
+    private Integer id;
     private String customerNo;
     private String name;
     private String phone;
@@ -17,4 +17,6 @@ public class CustomerResponse {
     private String contactAddress;
     private LocalDateTime enrolmentDate;
     private LocalDateTime lastModified;
+    LinkedHashMap<String, Accounts> accountMap;
+
 }

@@ -7,8 +7,9 @@ import iobank.org.accountmgt.mapper.ModelMapper;
 import iobank.org.accountmgt.model.request.AccountRequest;
 import iobank.org.accountmgt.model.request.BlockAccountRequest;
 import iobank.org.accountmgt.model.request.CustomerRequest;
-import iobank.org.accountmgt.model.response.AccountsResponse;
+import iobank.org.accountmgt.model.response.Accounts;
 import iobank.org.accountmgt.model.response.ApiResponse;
+import iobank.org.accountmgt.model.response.Customer;
 import iobank.org.accountmgt.model.response.CustomerResponse;
 import iobank.org.accountmgt.storage.LocalStorage;
 import iobank.org.accountmgt.validation.AppValidator;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Optional;
 
 import static iobank.org.accountmgt.utils.AppCode.*;
@@ -35,11 +37,11 @@ public class AccountServiceImpl implements  AccountService{
         String validationResult = AppValidator.isValid(payload);
         if(!validationResult.isBlank())
             throw new BadRequestException(validationResult);
-        Optional<CustomerResponse> customerResponseOptional = localStorage.findCustomer(payload.getPhone());
+        Optional<Customer> customerResponseOptional = localStorage.findCustomer(payload.getPhone());
         if(customerResponseOptional.isPresent())
             throw new DuplicationRecordException(DUPLICATE_RECORD);
 
-        CustomerResponse customerResponse = ModelMapper.mapToCustomer(payload);
+        Customer customerResponse = ModelMapper.mapToCustomer(payload);
         localStorage.save(customerResponse);
         return new ApiResponse(SUCCESS,CREATED,customerResponse);
     }
@@ -49,12 +51,12 @@ public class AccountServiceImpl implements  AccountService{
         String validationResult = AppValidator.isValid(payload);
         if(!validationResult.isBlank())
             throw new BadRequestException(validationResult);
-        Optional<CustomerResponse> customerResponseOptional = localStorage.findCustomer(payload.getCustomerPhone());
+        Optional<Customer> customerResponseOptional = localStorage.findCustomer(payload.getCustomerPhone());
         if(customerResponseOptional.isEmpty())
             throw new RecordNotFoundException(RECORD_NOT_FOUND);
         if(localStorage.isAccountExists(payload))
             throw new DuplicationRecordException(DUPLICATE_ACCOUNT);
-        AccountsResponse accountsResponse =localStorage.saveAccount(ModelMapper.mapToAccount(payload), payload.getCustomerPhone());
+        Accounts accountsResponse =localStorage.saveAccount(ModelMapper.mapToAccount(payload), payload.getCustomerPhone());
 
         return new ApiResponse(SUCCESS,CREATED,accountsResponse);
     }
@@ -64,18 +66,18 @@ public class AccountServiceImpl implements  AccountService{
         String validationResult = AppValidator.isValid(payload);
         if(!validationResult.isBlank())
             throw new BadRequestException(validationResult);
-        Optional<CustomerResponse> customerResponseOptional = localStorage.findCustomer(payload.getCustomerPhone());
+        Optional<Customer> customerResponseOptional = localStorage.findCustomer(payload.getCustomerPhone());
         if(customerResponseOptional.isEmpty())
             throw new RecordNotFoundException(RECORD_NOT_FOUND);
-        Optional<AccountsResponse> accountsResponse= localStorage.findAccountByNumber(payload.getAccountNumber(), payload.getCustomerPhone());
+        Optional<Accounts> accountsResponse= localStorage.findAccountByNumber(payload.getAccountNumber(), payload.getCustomerPhone());
         if(accountsResponse.isEmpty())
             throw new RecordNotFoundException(ACCOUNT_NOT_FOUND);
-        CustomerResponse customer = customerResponseOptional.get();
-        AccountsResponse account = accountsResponse.get();
+        Customer customer = customerResponseOptional.get();
+        Accounts account = accountsResponse.get();
         account.setIsActive(false);
         account.setLastModified(LocalDateTime.now());
 
-        LinkedHashMap<String,AccountsResponse> accountsResponseLinkedHashMap = customer.getAccountMap();
+        LinkedHashMap<String, Accounts> accountsResponseLinkedHashMap = customer.getAccountMap();
         accountsResponseLinkedHashMap.put(payload.getAccountNumber(), account);
         customer.setAccountMap(accountsResponseLinkedHashMap);
         localStorage.save(customer);
@@ -85,7 +87,8 @@ public class AccountServiceImpl implements  AccountService{
 
     @Override
     public ApiResponse listCustomer() {
-        return null;
+        List<CustomerResponse> customerResponseList=ModelMapper.mapToCustomerList( localStorage.findAll());
+        return new ApiResponse(SUCCESS,OKAY,customerResponseList);
     }
 
     @Override
