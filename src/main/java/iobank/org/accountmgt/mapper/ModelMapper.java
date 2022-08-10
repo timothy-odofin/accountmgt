@@ -26,8 +26,10 @@ public class ModelMapper {
         AccountsResponse mapTo = new AccountsResponse();
         mapTo.setAccountType(AccountType.valueOfName(mapFrom.getAccountType()));
         mapTo.setBalance(0.0);
+        mapTo.setLastModified(LocalDateTime.now());
         mapTo.setCurrency(CurrencyType.valueOfName(mapFrom.getCurrency()));
         mapTo.setDateOpened(LocalDateTime.now());
+        mapTo.setIsActive(true);
         return mapTo;
     }
 }

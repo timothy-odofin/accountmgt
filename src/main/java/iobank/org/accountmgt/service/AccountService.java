@@ -13,5 +13,5 @@ ApiResponse suspendOrUnsuspendAccount(BlockAccountRequest payload);
 ApiResponse listCustomer();
 ApiResponse listAllAccounts();
 ApiResponse listAccountsByCustomer(String customerPhone);
-ApiResponse retrieveAccount(String accountNumber);
+ApiResponse retrieveAccount(String accountNumber,String customerPhone);
 }

@@ -12,6 +12,7 @@ public class MessageUtil {
     public  final static String DUPLICATE_RECORD= "Duplicate record customer with phone already exists";
     public  final static String DUPLICATE_ACCOUNT= "Customer with the same AccountType and Currency already exists";
     public  final static String RECORD_NOT_FOUND= "Record with specified constraints not found";
+    public  final static String ACCOUNT_NOT_FOUND= "Customer account with specified number not found";
     public  final static String INVALID_ACCOUNT_TYPE = "Invalid customer account type";
     public  final static String INVALID_CURRENCY = "Invalid account currency provided";
     public  final static String INVALID_EMAIL = "Invalid customer email";

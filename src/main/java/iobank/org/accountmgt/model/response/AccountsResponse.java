@@ -13,7 +13,9 @@ public class AccountsResponse {
     private String accountNumber;
     private AccountType accountType;
     private LocalDateTime dateOpened;
+    private LocalDateTime lastModified;
     private Double balance;
     private CurrencyType currency;
+    private Boolean isActive;
 
 }

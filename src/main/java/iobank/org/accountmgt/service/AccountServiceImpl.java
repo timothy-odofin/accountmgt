@@ -16,11 +16,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
-import static iobank.org.accountmgt.utils.AppCode.CREATED;
-import static iobank.org.accountmgt.utils.AppCode.DUPLICATE;
+import static iobank.org.accountmgt.utils.AppCode.*;
 import static iobank.org.accountmgt.utils.MessageUtil.*;
 
 @Service
@@ -67,7 +67,20 @@ public class AccountServiceImpl implements  AccountService{
         Optional<CustomerResponse> customerResponseOptional = localStorage.findCustomer(payload.getCustomerPhone());
         if(customerResponseOptional.isEmpty())
             throw new RecordNotFoundException(RECORD_NOT_FOUND);
-        return null;
+        Optional<AccountsResponse> accountsResponse= localStorage.findAccountByNumber(payload.getAccountNumber(), payload.getCustomerPhone());
+        if(accountsResponse.isEmpty())
+            throw new RecordNotFoundException(ACCOUNT_NOT_FOUND);
+        CustomerResponse customer = customerResponseOptional.get();
+        AccountsResponse account = accountsResponse.get();
+        account.setIsActive(false);
+        account.setLastModified(LocalDateTime.now());
+
+        LinkedHashMap<String,AccountsResponse> accountsResponseLinkedHashMap = customer.getAccountMap();
+        accountsResponseLinkedHashMap.put(payload.getAccountNumber(), account);
+        customer.setAccountMap(accountsResponseLinkedHashMap);
+        localStorage.save(customer);
+
+        return new ApiResponse(SUCCESS,OKAY,PAYMENT_SUCCESSFUL);
     }
 
     @Override
@@ -86,7 +99,7 @@ public class AccountServiceImpl implements  AccountService{
     }
 
     @Override
-    public ApiResponse retrieveAccount(String accountNumber) {
+    public ApiResponse retrieveAccount(String accountNumber,String customerPhone) {
         return null;
     }
 }
