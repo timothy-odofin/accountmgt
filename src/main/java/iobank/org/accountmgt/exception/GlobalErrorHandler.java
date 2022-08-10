@@ -1,6 +1,6 @@
 package iobank.org.accountmgt.exception;
 
-import iobank.org.accountmgt.model.ApiResponse;
+import iobank.org.accountmgt.model.response.ApiResponse;
 import iobank.org.accountmgt.model.exception.ApiError;
 import iobank.org.accountmgt.utils.MessageUtil;
 import lombok.extern.slf4j.Slf4j;

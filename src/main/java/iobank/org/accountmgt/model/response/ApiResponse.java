@@ -1,4 +1,4 @@
-package iobank.org.accountmgt.model;
+package iobank.org.accountmgt.model.response;
 
 
 import java.util.HashMap;
