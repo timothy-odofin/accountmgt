@@ -54,14 +54,19 @@ public class AccountServiceImpl implements  AccountService{
             throw new RecordNotFoundException(RECORD_NOT_FOUND);
         if(localStorage.isAccountExists(payload))
             throw new DuplicationRecordException(DUPLICATE_ACCOUNT);
-        CustomerResponse customerResponse = customerResponseOptional.get();
-        LinkedHashMap<String, AccountsResponse> accountMap =customerResponse.getAccountMap();
+        AccountsResponse accountsResponse =localStorage.saveAccount(ModelMapper.mapToAccount(payload), payload.getCustomerPhone());
 
-        return null;
+        return new ApiResponse(SUCCESS,CREATED,accountsResponse);
     }
 
     @Override
     public ApiResponse suspendOrUnsuspendAccount(BlockAccountRequest payload) {
+        String validationResult = AppValidator.isValid(payload);
+        if(!validationResult.isBlank())
+            throw new BadRequestException(validationResult);
+        Optional<CustomerResponse> customerResponseOptional = localStorage.findCustomer(payload.getCustomerPhone());
+        if(customerResponseOptional.isEmpty())
+            throw new RecordNotFoundException(RECORD_NOT_FOUND);
         return null;
     }
 

@@ -1,5 +1,6 @@
 package iobank.org.accountmgt.storage;
 
+import iobank.org.accountmgt.exception.RecordNotFoundException;
 import iobank.org.accountmgt.model.request.AccountRequest;
 import iobank.org.accountmgt.model.request.CustomerRequest;
 import iobank.org.accountmgt.model.response.AccountsResponse;
@@ -15,6 +16,8 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static iobank.org.accountmgt.utils.MessageUtil.RECORD_NOT_FOUND;
 
 @Component
 @ApplicationScope
@@ -34,6 +37,15 @@ public class LocalStorage {
         if(phone==null || !customerStore.contains(phone))
             return Optional.empty();
         return Optional.of(customerStore.get(phone));
+    }
+    public Optional<AccountsResponse> findAccountByNumber(String accountNumber, String customerPhone){
+       CustomerResponse customerResponse = customerStore.get(customerPhone);
+       LinkedHashMap<String, AccountsResponse> accountsResponseLinkedHashMap =customerResponse.getAccountMap();
+       if(accountsResponseLinkedHashMap.containsKey(accountNumber))
+           return Optional.of(accountsResponseLinkedHashMap.get(accountNumber));
+       return Optional.empty();
+
+
     }
 public CustomerResponse save(CustomerResponse customer){
         String key = customer.getPhone();
