@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AccountServiceImpl implements  AccountService{
+public class TransactionServiceImpl implements TransactionService{
     private final LocalStorage localStorage;
 }
