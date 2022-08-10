@@ -16,6 +16,7 @@ public class CustomerResponse {
     private String email;
     private String contactAddress;
     private LocalDateTime enrolmentDate;
+    private LocalDateTime lastModified;
     LinkedHashMap<String, AccountsResponse> accountMap;
 
 }
