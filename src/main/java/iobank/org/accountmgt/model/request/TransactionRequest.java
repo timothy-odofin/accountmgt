@@ -1,14 +1,12 @@
 package iobank.org.accountmgt.model.request;
 
-import iobank.org.accountmgt.enums.ChannelType;
-import iobank.org.accountmgt.enums.TransactionType;
 import lombok.Data;
 
 @Data
 public class TransactionRequest {
     private String accountNumber;
-    private TransactionType category;
+    private String transactionType;
     private Double amount;
-    private ChannelType channel;
+    private String channel;
     private String narration;
 }

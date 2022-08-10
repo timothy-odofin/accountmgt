@@ -1,5 +1,7 @@
 package iobank.org.accountmgt.utils;
 
+import java.util.regex.Pattern;
+
 public class AppUtil {
 
     public  static Integer digitCombo(String number) {
@@ -56,4 +58,5 @@ public class AppUtil {
         int lastDigit = lastIndexCalcTwo(getNumberSum(arr));
         return calNumber + lastDigit;
     }
+
 }
