@@ -1,5 +1,6 @@
 package iobank.org.accountmgt.storage;
 
+import iobank.org.accountmgt.exception.RecordNotFoundException;
 import iobank.org.accountmgt.model.request.AccountRequest;
 import iobank.org.accountmgt.model.response.Accounts;
 import iobank.org.accountmgt.model.response.Customer;
@@ -14,6 +15,8 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static iobank.org.accountmgt.utils.MessageUtil.CUSTOMER_NOT_FOUND;
 
 @Component
 @ApplicationScope
@@ -77,6 +80,12 @@ public boolean isAccountExists(AccountRequest payload){
             return true;
     }
     return false;
+}
+public List<Accounts> listAccount(String customerPhone){
+        Optional<Customer> customerOptional = findCustomer(customerPhone);
+        if(customerOptional.isEmpty())
+            throw new RecordNotFoundException(CUSTOMER_NOT_FOUND);
+        return new LinkedList<>(customerOptional.get().getAccountMap().values());
 }
 public Integer getTotalAccounts(){
    Integer totalAccount=0;

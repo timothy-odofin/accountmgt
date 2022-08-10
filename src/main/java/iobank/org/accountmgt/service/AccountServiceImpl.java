@@ -98,7 +98,10 @@ public class AccountServiceImpl implements  AccountService{
 
     @Override
     public ApiResponse listAccountsByCustomer(String customerPhone) {
-        return null;
+        if(customerPhone==null || customerPhone.isBlank())
+            return listAllAccounts();
+        List<Accounts> accountsList = localStorage.listAccount(customerPhone);
+        return new ApiResponse(SUCCESS,OKAY,accountsList);
     }
 
     @Override
