@@ -1,13 +1,24 @@
 package iobank.org.accountmgt.service;
 
+import iobank.org.accountmgt.exception.BadRequestException;
+import iobank.org.accountmgt.exception.DuplicationRecordException;
+import iobank.org.accountmgt.mapper.ModelMapper;
 import iobank.org.accountmgt.model.request.AccountRequest;
 import iobank.org.accountmgt.model.request.BlockAccountRequest;
 import iobank.org.accountmgt.model.request.CustomerRequest;
 import iobank.org.accountmgt.model.response.ApiResponse;
+import iobank.org.accountmgt.model.response.CustomerResponse;
 import iobank.org.accountmgt.storage.LocalStorage;
+import iobank.org.accountmgt.validation.AppValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+import static iobank.org.accountmgt.utils.AppCode.CREATED;
+import static iobank.org.accountmgt.utils.AppCode.DUPLICATE;
+import static iobank.org.accountmgt.utils.MessageUtil.*;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +28,16 @@ public class AccountServiceImpl implements  AccountService{
 
     @Override
     public ApiResponse addCustomer(CustomerRequest payload) {
-        return null;
+        String validationResult = AppValidator.isValid(payload);
+        if(!validationResult.isBlank())
+            throw new BadRequestException(validationResult);
+        Optional<CustomerResponse> customerResponseOptional = localStorage.findCustomer(payload.getPhone());
+        if(customerResponseOptional.isPresent())
+            throw new DuplicationRecordException(DUPLICATE_RECORD);
+
+        CustomerResponse customerResponse = ModelMapper.mapToCustomer(payload);
+        localStorage.save(customerResponse);
+        return new ApiResponse(SUCCESS,CREATED,customerResponse);
     }
 
     @Override
