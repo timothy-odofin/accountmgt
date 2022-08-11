@@ -1,9 +1,12 @@
 package iobank.org.accountmgt.mapper;
 
 import iobank.org.accountmgt.enums.AccountType;
+import iobank.org.accountmgt.enums.ChannelType;
 import iobank.org.accountmgt.enums.CurrencyType;
+import iobank.org.accountmgt.enums.TransactionType;
 import iobank.org.accountmgt.model.request.AccountRequest;
 import iobank.org.accountmgt.model.request.CustomerRequest;
+import iobank.org.accountmgt.model.request.DepositRequest;
 import iobank.org.accountmgt.model.response.*;
 
 import java.time.LocalDateTime;
@@ -12,6 +15,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ModelMapper {
+
+    public static Transactions mapToRequest(DepositRequest mapFrom){
+        if(mapFrom==null)
+            return null;
+        return Transactions.builder()
+                .accountNumber(mapFrom.getAccountNumber())
+                .amount(mapFrom.getAmount())
+                .category(TransactionType.DEPOSIT)
+                .channel(ChannelType.valueOfName(mapFrom.getChannel()))
+                .narration(mapFrom.getNarration())
+                .transactionDate(LocalDateTime.now())
+                .build();
+
+    }
     public static CustomerResponse mapToCustomer(Customer mapFrom){
         if(mapFrom==null)
             return null;

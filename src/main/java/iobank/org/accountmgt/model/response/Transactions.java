@@ -3,11 +3,15 @@ package iobank.org.accountmgt.model.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import iobank.org.accountmgt.enums.ChannelType;
 import iobank.org.accountmgt.enums.TransactionType;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Transactions {
     private String accountNumber;
     private TransactionType category;
