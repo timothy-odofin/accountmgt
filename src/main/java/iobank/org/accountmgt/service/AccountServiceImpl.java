@@ -49,15 +49,17 @@ public class AccountServiceImpl implements  AccountService{
     @Override
     public ApiResponse addAccountToCustomer(AccountRequest payload) {
         String validationResult = AppValidator.isValid(payload);
-        if(!validationResult.isBlank())
+        if(!validationResult.isBlank()) {
+            log.info(validationResult);
             throw new BadRequestException(validationResult);
+        }
         Optional<Customer> customerResponseOptional = localStorage.findCustomer(payload.getCustomerPhone());
         if(customerResponseOptional.isEmpty())
             throw new RecordNotFoundException(RECORD_NOT_FOUND);
         if(localStorage.isAccountExists(payload))
             throw new DuplicationRecordException(DUPLICATE_ACCOUNT);
         Accounts accountsResponse =localStorage.saveAccount(ModelMapper.mapToAccount(payload), payload.getCustomerPhone());
-
+log.info(PAYMENT_SUCCESSFUL);
         return new ApiResponse(SUCCESS,CREATED,accountsResponse);
     }
 
@@ -81,8 +83,8 @@ public class AccountServiceImpl implements  AccountService{
         accountsResponseLinkedHashMap.put(payload.getAccountNumber(), account);
         customer.setAccountMap(accountsResponseLinkedHashMap);
         localStorage.save(customer);
-
-        return new ApiResponse(SUCCESS,OKAY,PAYMENT_SUCCESSFUL);
+log.info(ACCOUNT_SUSPENDED_RESP);
+        return new ApiResponse(SUCCESS,OKAY,ACCOUNT_SUSPENDED_RESP);
     }
 
     @Override

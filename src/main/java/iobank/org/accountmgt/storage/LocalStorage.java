@@ -8,6 +8,7 @@ import iobank.org.accountmgt.model.response.Customer;
 import iobank.org.accountmgt.model.response.TransactionResponse;
 import iobank.org.accountmgt.model.response.Transactions;
 import iobank.org.accountmgt.utils.AppUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.ApplicationScope;
@@ -22,6 +23,7 @@ import static iobank.org.accountmgt.utils.MessageUtil.CUSTOMER_NOT_FOUND;
 
 @Service
 @ApplicationScope
+@Slf4j
 public class LocalStorage {
     private LinkedHashMap<String, Customer> customerStore;
     @PostConstruct
@@ -31,6 +33,13 @@ public class LocalStorage {
     @Value("${BANK.CODE}")
     private String bankCode;
 
+    /*
+    @param accountNumber
+    @Return Array of TransactionResponse
+    @Condition verify if an account exists for the given accountNumber
+    @Return Empty array of no account exists
+    @Return array of TransactionResponse sorted by TransactionDate in descending order
+    */
     public synchronized List<TransactionResponse> findTransactionByAccountNumber(String accountNumber){
             Optional<Accounts> accountsOptional = findAccount(accountNumber);
             if(accountsOptional.isPresent()){

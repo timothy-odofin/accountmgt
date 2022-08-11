@@ -62,8 +62,10 @@ public class TransactionServiceImpl implements TransactionService {
             accountsLinkedHashMap.put(payload.getAccountNumber(), accounts);
             customer.setAccountMap(accountsLinkedHashMap);
             localStorage.save(customer);
+            log.info(WITHDRAWAL_SUCCESSFUL);
             return new ApiResponse(SUCCESS, OKAY, WITHDRAWAL_SUCCESSFUL);
         }
+        log.error(INSUFFICIENT_BALANCE);
         return new ApiResponse(SUCCESS, OKAY, INSUFFICIENT_BALANCE);
     }
 
@@ -87,6 +89,7 @@ public class TransactionServiceImpl implements TransactionService {
         accountsLinkedHashMap.put(payload.getAccountNumber(), accounts);
         customer.setAccountMap(accountsLinkedHashMap);
         localStorage.save(customer);
+        log.info(PAYMENT_SUCCESSFUL);
         return new ApiResponse(SUCCESS, OKAY, PAYMENT_SUCCESSFUL);
     }
 
