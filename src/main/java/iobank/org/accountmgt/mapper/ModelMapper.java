@@ -67,6 +67,9 @@ public class ModelMapper {
                 .transactionDate(mapFrom.getTransactionDate())
                 .narration(mapFrom.getNarration())
                 .accountNumber(mapFrom.getAccountNumber())
+                .balanceAfter(mapFrom.getBalanceAfter())
+                .balanceBefore(mapFrom.getBalanceBefore())
+                .tranRef(mapFrom.getTranRef())
                 .build();
     }
    public static AccountsResponse mapToAccountsResponse(Accounts mapFrom){

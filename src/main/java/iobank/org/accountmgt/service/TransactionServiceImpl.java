@@ -7,6 +7,8 @@ import iobank.org.accountmgt.model.request.DepositRequest;
 import iobank.org.accountmgt.model.request.WithdrawalRequest;
 import iobank.org.accountmgt.model.response.*;
 import iobank.org.accountmgt.storage.LocalStorage;
+import iobank.org.accountmgt.utils.AppUtil;
+import iobank.org.accountmgt.utils.SequenceUtil;
 import iobank.org.accountmgt.validation.AppValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,11 +41,19 @@ public class TransactionServiceImpl implements TransactionService {
         Customer customer = customerOptional.get();
         LinkedHashMap<String, Accounts> accountsLinkedHashMap = customer.getAccountMap();
         Accounts accounts = accountsLinkedHashMap.get(payload.getAccountNumber());
+        if(!accounts.getIsActive())
+            throw new BadRequestException(ACCOUNT_SUSPENDED);
         if(accounts.getBalance()>=payload.getAmount()) {
-            accounts.setBalance(accounts.getBalance() - payload.getAmount());
             ArrayList<Transactions> transactions =getTransaction(accounts);
             Transactions transaction = ModelMapper.mapToRequest(payload);
+            transaction.setBalanceBefore(accounts.getBalance());
+            Double balance = accounts.getBalance()- payload.getAmount();
+            accounts.setBalance(balance);
+
+            transaction.setBalanceAfter(accounts.getBalance());
+            transaction.setTranRef(AppUtil.getReference());
             transactions.add(transaction);
+
             accounts.setTransactions(transactions);
             accountsLinkedHashMap.put(payload.getAccountNumber(), accounts);
             customer.setAccountMap(accountsLinkedHashMap);
@@ -64,15 +74,18 @@ public class TransactionServiceImpl implements TransactionService {
         Customer customer = customerOptional.get();
         LinkedHashMap<String, Accounts> accountsLinkedHashMap = customer.getAccountMap();
         Accounts accounts = accountsLinkedHashMap.get(payload.getAccountNumber());
-        accounts.setBalance(accounts.getBalance() + payload.getAmount());
         ArrayList<Transactions> transactions =getTransaction(accounts);
         Transactions transaction = ModelMapper.mapToRequest(payload);
+        transaction.setBalanceBefore(accounts.getBalance());
+        Double balance = accounts.getBalance()+ payload.getAmount();
+        accounts.setBalance(balance);
+        transaction.setBalanceAfter(accounts.getBalance());
+        transaction.setTranRef(AppUtil.getReference());
         transactions.add(transaction);
         accounts.setTransactions(transactions);
         accountsLinkedHashMap.put(payload.getAccountNumber(), accounts);
         customer.setAccountMap(accountsLinkedHashMap);
         localStorage.save(customer);
-
         return new ApiResponse(SUCCESS, OKAY, PAYMENT_SUCCESSFUL);
     }
 

@@ -20,4 +20,7 @@ public class Transactions {
     private LocalDateTime transactionDate;
     private ChannelType channel;
     private String narration;
+    private Double balanceBefore;
+    private Double balanceAfter;
+    private String tranRef;
 }

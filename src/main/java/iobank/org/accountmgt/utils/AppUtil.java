@@ -58,5 +58,8 @@ public class AppUtil {
         int lastDigit = lastIndexCalcTwo(getNumberSum(arr));
         return calNumber + lastDigit;
     }
+    public static String getReference(){
+     return System.currentTimeMillis()+"";
+    }
 
 }

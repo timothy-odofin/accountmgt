@@ -19,4 +19,7 @@ public class TransactionResponse {
     private ChannelType channel;
     private String narration;
     private String accountNumber;
+    private Double balanceBefore;
+    private Double balanceAfter;
+    private String tranRef;
 }

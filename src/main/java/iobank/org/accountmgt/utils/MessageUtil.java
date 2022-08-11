@@ -8,7 +8,7 @@ public class MessageUtil {
     public  final static String INVALID_CUSTOMER_ACCOUNT_NUMBER = "Invalid customer account number";
     public  final static String INVALID_TRANSACTION_AMOUNT = "Invalid transaction amount";
     public  final static String INVALID_TRANSACTION_CHANNEL = "Invalid transaction channel";
-    public  final static String INVALID_TRANSACTION_TYPE= "Invalid transaction type";
+    public  final static String ACCOUNT_SUSPENDED= "You cannot withdrawal from suspended account";
     public  final static String INVALID_ACCOUNT_STATUS= "Invalid account status";
     public  final static String DUPLICATE_RECORD= "Duplicate record customer with phone already exists";
     public  final static String DUPLICATE_ACCOUNT= "Customer with the same AccountType and Currency already exists";
