@@ -30,15 +30,19 @@ public class TransactionServiceImpl implements TransactionService {
     private ArrayList<Transactions> getTransaction(Accounts accounts){
         return  accounts.getTransactions() == null ? new ArrayList<>() : accounts.getTransactions();
     }
+    private Customer validateCustomer(String accountNumber){
+        Optional<Customer> customerOptional = localStorage.findCustomerByAccountNumber(accountNumber);
+        if (customerOptional.isEmpty())
+            throw new RecordNotFoundException(RECORD_NOT_FOUND);
+       return customerOptional.get();
+    }
     @Override
     public ApiResponse withdraw(WithdrawalRequest payload) {
         String errorResult = AppValidator.isValid(payload);
         if (!errorResult.isBlank())
             throw new BadRequestException(errorResult);
-        Optional<Customer> customerOptional = localStorage.findCustomerByAccountNumber(payload.getAccountNumber());
-        if (customerOptional.isEmpty())
-            throw new RecordNotFoundException(RECORD_NOT_FOUND);
-        Customer customer = customerOptional.get();
+
+        Customer customer = validateCustomer(payload.getAccountNumber());
         LinkedHashMap<String, Accounts> accountsLinkedHashMap = customer.getAccountMap();
         Accounts accounts = accountsLinkedHashMap.get(payload.getAccountNumber());
         if(!accounts.getIsActive())
@@ -68,10 +72,7 @@ public class TransactionServiceImpl implements TransactionService {
         String errorResult = AppValidator.isValid(payload);
         if (!errorResult.isBlank())
             throw new BadRequestException(errorResult);
-        Optional<Customer> customerOptional = localStorage.findCustomerByAccountNumber(payload.getAccountNumber());
-        if (customerOptional.isEmpty())
-            throw new RecordNotFoundException(RECORD_NOT_FOUND);
-        Customer customer = customerOptional.get();
+        Customer customer = validateCustomer(payload.getAccountNumber());
         LinkedHashMap<String, Accounts> accountsLinkedHashMap = customer.getAccountMap();
         Accounts accounts = accountsLinkedHashMap.get(payload.getAccountNumber());
         ArrayList<Transactions> transactions =getTransaction(accounts);

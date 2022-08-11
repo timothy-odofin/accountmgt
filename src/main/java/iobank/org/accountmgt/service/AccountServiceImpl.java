@@ -13,7 +13,6 @@ import iobank.org.accountmgt.validation.AppValidator;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,7 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static iobank.org.accountmgt.utils.AppCode.*;
+import static iobank.org.accountmgt.utils.AppCode.CREATED;
+import static iobank.org.accountmgt.utils.AppCode.OKAY;
 import static iobank.org.accountmgt.utils.MessageUtil.*;
 
 @Service
@@ -30,6 +30,7 @@ import static iobank.org.accountmgt.utils.MessageUtil.*;
 public class AccountServiceImpl implements  AccountService{
     @NonNull
     private  LocalStorage localStorage;
+
 
     @Override
     public ApiResponse addCustomer(CustomerRequest payload) {
