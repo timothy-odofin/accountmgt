@@ -40,10 +40,9 @@ public class AccountServiceImpl implements  AccountService{
         Optional<Customer> customerResponseOptional = localStorage.findCustomer(payload.getPhone());
         if(customerResponseOptional.isPresent())
             throw new DuplicationRecordException(DUPLICATE_RECORD);
-
         Customer customerResponse = ModelMapper.mapToCustomer(payload);
-        localStorage.save(customerResponse);
-        return new ApiResponse(SUCCESS,CREATED,PAYMENT_SUCCESSFUL);
+       localStorage.save(customerResponse);
+        return new ApiResponse(SUCCESS,CREATED,CUSTOMER_CREATED);
     }
 
     @Override

@@ -7,15 +7,18 @@ import iobank.org.accountmgt.enums.TransactionType;
 import iobank.org.accountmgt.model.request.CustomerRequest;
 import iobank.org.accountmgt.model.request.DepositRequest;
 import iobank.org.accountmgt.model.request.WithdrawalRequest;
-import iobank.org.accountmgt.model.response.AccountsResponse;
-import iobank.org.accountmgt.model.response.CustomerResponse;
-import iobank.org.accountmgt.model.response.TransactionResponse;
+import iobank.org.accountmgt.model.response.*;
 import iobank.org.accountmgt.utils.AppUtil;
+import iobank.org.accountmgt.utils.MessageUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+
+import static iobank.org.accountmgt.utils.AppCode.DUPLICATE_ID;
+import static iobank.org.accountmgt.utils.AppCode.OKAY;
 
 public class DataUtils {
     private static String getAccountNumber(){
@@ -67,6 +70,19 @@ public static CustomerRequest customerData(){
                 .contactAddress(getContactAddress())
                 .build();
     }
+
+    public static Customer getStoreCustomer(){
+        return Customer.builder()
+                .customerNo(AppUtil.getSerialNumber(1,6))
+                .phone(getCustomerPhone())
+                .name("Odofin Oyejide")
+                .enrolmentDate(LocalDateTime.now())
+                .lastModified(LocalDateTime.now())
+                .email("odofin@swipe.ng")
+                .contactAddress(getContactAddress())
+                .accountMap(new LinkedHashMap<>())
+                .build();
+    }
     public static List<CustomerResponse> getCustomerList(){
         return  Collections.singletonList(getCustomer());
     }
@@ -100,5 +116,12 @@ public static CustomerRequest customerData(){
             .transactions(getTransactions())
             .build();
     }
+    public static ApiResponse<String> getResult(){
+        return new ApiResponse<>(MessageUtil.SUCCESS,OKAY, MessageUtil.CUSTOMER_CREATED);
+    }
+    public static ApiResponse<String> getFailedCustomer(){
+        return new ApiResponse<>(MessageUtil.FAILED,DUPLICATE_ID, MessageUtil.DUPLICATE_RECORD);
+    }
+
 
 }

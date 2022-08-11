@@ -1,21 +1,26 @@
 package iobank.org.accountmgt.model;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 
 public class RestMapper {
-    protected String mapToJson(Object obj) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(obj);
+    private static Gson getGson(){
+        return new Gson();
     }
-    protected <T> T mapFromJson(String json, Class<T> clazz)
-            throws JsonParseException, JsonMappingException, IOException {
+    public static String mapToJson(Object obj) throws JsonProcessingException {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(json, clazz);
+        return getGson().toJson(obj);
+    }
+    public static <T> T mapFromJson(String json, Class<T> clazz)
+            throws IOException {
+
+
+        return getGson().fromJson(json, clazz);
     }
 }

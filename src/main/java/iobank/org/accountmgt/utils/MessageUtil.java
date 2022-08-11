@@ -3,6 +3,7 @@ package iobank.org.accountmgt.utils;
 public class MessageUtil {
     public  final static String PAYMENT_SUCCESSFUL = "Great, transaction processed successfully.";
     public  final static String WITHDRAWAL_SUCCESSFUL = "Great, withdrawal successful.";
+    public  final static String CUSTOMER_CREATED = "Great, customer created successfully";
     public  final static String INSUFFICIENT_BALANCE = "Your balance is not enough to perform this transaction";
     public  final static String INVALID_CUSTOMER_NUMBER = "Invalid customer number";
     public  final static String INVALID_CUSTOMER_ACCOUNT_NUMBER = "Invalid customer account number";

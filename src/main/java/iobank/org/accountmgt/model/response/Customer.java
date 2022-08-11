@@ -1,13 +1,15 @@
 package iobank.org.accountmgt.model.response;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 
 @Data
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Customer {
     private Integer id;
     private String customerNo;
