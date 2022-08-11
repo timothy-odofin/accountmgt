@@ -8,20 +8,14 @@ import iobank.org.accountmgt.model.response.Customer;
 import iobank.org.accountmgt.model.response.TransactionResponse;
 import iobank.org.accountmgt.model.response.Transactions;
 import iobank.org.accountmgt.utils.AppUtil;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.context.annotation.ApplicationScope;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static iobank.org.accountmgt.utils.MessageUtil.ACCOUNT_NOT_FOUND;
 import static iobank.org.accountmgt.utils.MessageUtil.CUSTOMER_NOT_FOUND;
@@ -53,19 +47,13 @@ public class LocalStorage {
 
 
     }
-    private List<Transactions> getTransactions(Accounts accounts){
-        List<Transactions> ls = accounts.getTransactions();
-        if(ls.isEmpty())
-            return Collections.emptyList();
 
-        return accounts.getTransactions();
-    }
     public synchronized List<TransactionResponse> getTransactionsByCustomer(Customer customer){
         Map<String,Accounts> maps = customer.getAccountMap();
         List<TransactionResponse> ls = new ArrayList<>();
         if(maps==null || maps.isEmpty())
             return Collections.emptyList();
-        maps.values().forEach(rs->ls.addAll(ModelMapper.mapToTransaction(getTransactions(rs))));
+        maps.values().forEach(rs->ls.addAll(ModelMapper.mapToTransaction(rs.getTransactions())));
         return ls;
     }
     public synchronized List<TransactionResponse> listTransaction(){
@@ -77,11 +65,9 @@ public class LocalStorage {
 
        if(ls.isEmpty())
            return Collections.emptyList();
-            return  ls.stream().sorted(Comparator.comparing(TransactionResponse::getTransactionDate).reversed()).collect(Collectors.toList());
-
-
-
-
+            return  ls.stream()
+                    .sorted(Comparator.comparing(TransactionResponse::getTransactionDate).reversed())
+                    .collect(Collectors.toList());
     }
     private Optional<Accounts> findAny(Collection<Accounts> data, String accountNumber){
         return data.stream().filter(account->account.getAccountNumber().equals(accountNumber))
@@ -105,7 +91,6 @@ public class LocalStorage {
             return new ArrayList<>();
         ArrayList<Customer> ls = new ArrayList<>();
         ls.addAll(customerStore.values());
-        System.out.println("Size.................."+ ls.size());
         return ls;
     }
 
