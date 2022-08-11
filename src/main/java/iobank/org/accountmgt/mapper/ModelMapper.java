@@ -7,6 +7,7 @@ import iobank.org.accountmgt.enums.TransactionType;
 import iobank.org.accountmgt.model.request.AccountRequest;
 import iobank.org.accountmgt.model.request.CustomerRequest;
 import iobank.org.accountmgt.model.request.DepositRequest;
+import iobank.org.accountmgt.model.request.WithdrawalRequest;
 import iobank.org.accountmgt.model.response.*;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,19 @@ public class ModelMapper {
                 .accountNumber(mapFrom.getAccountNumber())
                 .amount(mapFrom.getAmount())
                 .category(TransactionType.DEPOSIT)
+                .channel(ChannelType.valueOfName(mapFrom.getChannel()))
+                .narration(mapFrom.getNarration())
+                .transactionDate(LocalDateTime.now())
+                .build();
+
+    }
+    public static Transactions mapToRequest(WithdrawalRequest mapFrom){
+        if(mapFrom==null)
+            return null;
+        return Transactions.builder()
+                .accountNumber(mapFrom.getAccountNumber())
+                .amount(mapFrom.getAmount())
+                .category(TransactionType.WITHDRAWAL)
                 .channel(ChannelType.valueOfName(mapFrom.getChannel()))
                 .narration(mapFrom.getNarration())
                 .transactionDate(LocalDateTime.now())

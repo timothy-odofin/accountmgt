@@ -25,10 +25,32 @@ import static iobank.org.accountmgt.utils.MessageUtil.*;
 public class TransactionServiceImpl implements TransactionService {
     private final LocalStorage localStorage;
 
+    private ArrayList<Transactions> getTransaction(Accounts accounts){
+        return  accounts.getTransactions() == null ? new ArrayList<>() : accounts.getTransactions();
+    }
     @Override
     public ApiResponse withdraw(WithdrawalRequest payload) {
-
-        return null;
+        String errorResult = AppValidator.isValid(payload);
+        if (!errorResult.isBlank())
+            throw new BadRequestException(errorResult);
+        Optional<Customer> customerOptional = localStorage.findCustomerByAccountNumber(payload.getAccountNumber());
+        if (customerOptional.isEmpty())
+            throw new RecordNotFoundException(RECORD_NOT_FOUND);
+        Customer customer = customerOptional.get();
+        LinkedHashMap<String, Accounts> accountsLinkedHashMap = customer.getAccountMap();
+        Accounts accounts = accountsLinkedHashMap.get(payload.getAccountNumber());
+        if(accounts.getBalance()>=payload.getAmount()) {
+            accounts.setBalance(accounts.getBalance() - payload.getAmount());
+            ArrayList<Transactions> transactions =getTransaction(accounts);
+            Transactions transaction = ModelMapper.mapToRequest(payload);
+            transactions.add(transaction);
+            accounts.setTransactions(transactions);
+            accountsLinkedHashMap.put(payload.getAccountNumber(), accounts);
+            customer.setAccountMap(accountsLinkedHashMap);
+            localStorage.save(customer);
+            return new ApiResponse(SUCCESS, OKAY, WITHDRAWAL_SUCCESSFUL);
+        }
+        return new ApiResponse(SUCCESS, OKAY, INSUFFICIENT_BALANCE);
     }
 
     @Override
@@ -41,10 +63,9 @@ public class TransactionServiceImpl implements TransactionService {
             throw new RecordNotFoundException(RECORD_NOT_FOUND);
         Customer customer = customerOptional.get();
         LinkedHashMap<String, Accounts> accountsLinkedHashMap = customer.getAccountMap();
-
         Accounts accounts = accountsLinkedHashMap.get(payload.getAccountNumber());
         accounts.setBalance(accounts.getBalance() + payload.getAmount());
-        ArrayList<Transactions> transactions = accounts.getTransactions() == null ? new ArrayList<>() : accounts.getTransactions();
+        ArrayList<Transactions> transactions =getTransaction(accounts);
         Transactions transaction = ModelMapper.mapToRequest(payload);
         transactions.add(transaction);
         accounts.setTransactions(transactions);

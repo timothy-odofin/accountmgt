@@ -7,6 +7,7 @@ import iobank.org.accountmgt.model.response.TransactionResponse;
 import iobank.org.accountmgt.service.TransactionService;
 import iobank.org.accountmgt.utils.TransactionEndpoints;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -29,12 +30,12 @@ public class TransactionRoute {
         return transactionService.deposit(payload);
     }
     @GetMapping(TransactionEndpoints.LIST_PATH)
-    public  ApiResponse<List<TransactionResponse>> listTransaction(@RequestParam(ACCOUNT_PARAM) String accountNumber){
+    public  ApiResponse<List<TransactionResponse>> listTransaction(@RequestParam(value=ACCOUNT_PARAM, required = false) String accountNumber){
         return transactionService.listTransaction(accountNumber);
     }
     @GetMapping(TRANSACTION_LIST_BY_ACCOUNT)
-    public  ApiResponse<List<TransactionResponse>> listTransactionByDate(@RequestParam(ACCOUNT_PARAM) String accountNumber,
-                                                                         @RequestParam(DATE_PARAM) LocalDate tranDate){
+    public  ApiResponse<List<TransactionResponse>> listTransactionByDate(@RequestParam(value=ACCOUNT_PARAM, required = false) String accountNumber,
+                                                                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam(DATE_PARAM) LocalDate tranDate){
      return transactionService.listTransactionByDate(accountNumber, tranDate);
     }
 }
