@@ -7,6 +7,7 @@ import iobank.org.accountmgt.model.request.CustomerRequest;
 import iobank.org.accountmgt.model.response.*;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +53,11 @@ public class ModelMapper {
     }
 
     public static List<TransactionResponse> mapToTransaction(List<Transactions> mapFrom){
-        return mapFrom.stream().filter(transaction->transaction!=null).map(transaction -> mapToTransaction(transaction)).collect(Collectors.toList());
+        return mapFrom.stream()
+                .sorted(Comparator.comparing(Transactions::getTransactionDate).reversed())
+                .filter(transaction->transaction!=null)
+                .map(ModelMapper::mapToTransaction)
+                .collect(Collectors.toList());
     }
     public static List<CustomerResponse> mapToCustomerList(List<Customer> mapFrom){
         return mapFrom.stream().filter(customer->customer!=null).map(ModelMapper::mapToCustomer).collect(Collectors.toList());

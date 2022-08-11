@@ -4,10 +4,7 @@ import iobank.org.accountmgt.enums.AccountType;
 import iobank.org.accountmgt.enums.ChannelType;
 import iobank.org.accountmgt.enums.CurrencyType;
 import iobank.org.accountmgt.enums.TransactionType;
-import iobank.org.accountmgt.model.request.AccountRequest;
-import iobank.org.accountmgt.model.request.BlockAccountRequest;
-import iobank.org.accountmgt.model.request.CustomerRequest;
-import iobank.org.accountmgt.model.request.TransactionRequest;
+import iobank.org.accountmgt.model.request.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -28,16 +25,25 @@ public class AppValidator {
             errorList.add(INVALID_CONTACT_PHONE);
         return errorList.isEmpty()?"":String.join(",", errorList);
     }
-    public static String isValid(TransactionRequest payload){
+    public static String isValid(WithdrawalRequest payload){
         ArrayList<String> errorList = new ArrayList<>();
         if(!StringUtils.isNumeric(payload.getAccountNumber()))
             errorList.add(INVALID_CUSTOMER_ACCOUNT_NUMBER);
-         if(TransactionType.valueOfName(payload.getTransactionType())==null)
-            errorList.add(INVALID_TRANSACTION_TYPE);
          if(ChannelType.valueOfName(payload.getChannel())==null)
             errorList.add(INVALID_TRANSACTION_CHANNEL);
          if(payload.getAmount()==null ||payload.getAmount()<=0)
              errorList.add(INVALID_TRANSACTION_AMOUNT);
+        return errorList.isEmpty()?"":String.join(",", errorList);
+    }
+
+    public static String isValid(DepositRequest payload){
+        ArrayList<String> errorList = new ArrayList<>();
+        if(!StringUtils.isNumeric(payload.getAccountNumber()))
+            errorList.add(INVALID_CUSTOMER_ACCOUNT_NUMBER);
+        if(ChannelType.valueOfName(payload.getChannel())==null)
+            errorList.add(INVALID_TRANSACTION_CHANNEL);
+        if(payload.getAmount()==null ||payload.getAmount()<=0)
+            errorList.add(INVALID_TRANSACTION_AMOUNT);
         return errorList.isEmpty()?"":String.join(",", errorList);
     }
 
