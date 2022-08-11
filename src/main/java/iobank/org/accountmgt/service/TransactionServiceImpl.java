@@ -18,6 +18,7 @@ public class TransactionServiceImpl implements TransactionService{
 
     @Override
     public ApiResponse withdraw(WithdrawalRequest payload) {
+
         return null;
     }
 

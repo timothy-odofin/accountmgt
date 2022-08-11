@@ -105,7 +105,19 @@ public class AccountServiceImpl implements  AccountService{
 
     @Override
     public ApiResponse retrieveAccount(String accountNumber,String customerPhone) {
-        Optional<Accounts> accountsOptional= localStorage.findAccountByNumber(accountNumber, customerPhone);
+        Optional<Accounts> accountsOptional=localStorage.findAccountByNumber(accountNumber, customerPhone);
+        if(accountsOptional.isEmpty())
+            throw new RecordNotFoundException(ACCOUNT_NOT_FOUND);
+
+        AccountsResponse accountsResponse = ModelMapper.mapToAccountsResponse(accountsOptional.get());
+        accountsResponse.setTransactions(localStorage.findTransactionByAccountNumber(accountNumber));
+        return new ApiResponse(SUCCESS,OKAY,accountsResponse);
+    }
+
+    @Override
+    public ApiResponse retrieveAccount(String accountNumber) {
+        Optional<Accounts> accountsOptional = localStorage.findAccount(accountNumber);
+
         if(accountsOptional.isEmpty())
             throw new RecordNotFoundException(ACCOUNT_NOT_FOUND);
         AccountsResponse accountsResponse = ModelMapper.mapToAccountsResponse(accountsOptional.get());

@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static iobank.org.accountmgt.utils.MessageUtil.ACCOUNT_NOT_FOUND;
 import static iobank.org.accountmgt.utils.MessageUtil.CUSTOMER_NOT_FOUND;
@@ -29,23 +30,43 @@ import static iobank.org.accountmgt.utils.MessageUtil.CUSTOMER_NOT_FOUND;
 @ApplicationScope
 public class LocalStorage {
     private LinkedHashMap<String, Customer> customerStore;
-    private LinkedHashMap<String, ArrayList<Transactions>> transactionStore;
     @PostConstruct
     public void init(){
         customerStore=new LinkedHashMap<>();
-        transactionStore= new LinkedHashMap<>();
-
     }
     @Value("${BANK.CODE}")
     private String bankCode;
 
     public List<TransactionResponse> findTransactionByAccountNumber(String accountNumber){
-        if(transactionStore.isEmpty())
-            return new ArrayList<>();
-       return transactionStore.get(accountNumber).stream()
-               .filter(rs->rs !=null && rs.getAccountNumber()!=null)
-               .map(ModelMapper::mapToTransaction)
-               .collect(Collectors.toList());
+            Optional<Accounts> accountsOptional = findAccount(accountNumber);
+            if(accountsOptional.isPresent()){
+               Accounts accounts = accountsOptional.get();
+               if(accounts.getTransactions()==null || accounts.getTransactions().isEmpty())
+                   return Collections.emptyList();
+             return  accounts.getTransactions().stream()
+                     .filter(tr->tr!=null && tr.getTransactionDate()!=null)
+                     .sorted(Comparator.comparing(Transactions::getTransactionDate).reversed())
+                     .map(ModelMapper::mapToTransaction).collect(Collectors.toList());
+            }
+            return Collections.emptyList();
+
+
+
+    }
+    private Optional<Accounts> findAny(Collection<Accounts> data, String accountNumber){
+        return data.stream().filter(account->account.getAccountNumber().equals(accountNumber))
+                .findFirst();
+    }
+    public Optional<Accounts> findAccount(String accountNumber){
+        if(customerStore.isEmpty())
+            return Optional.empty();
+        for(Customer ac:customerStore.values()){
+            Optional<Accounts> accountsOptional = findAny(ac.getAccountMap().values(),accountNumber);
+            if(accountsOptional.isPresent())
+                return accountsOptional;
+        }
+       return Optional.empty();
+
 
 
     }
@@ -60,7 +81,7 @@ public class LocalStorage {
 
     public Optional<Customer> findCustomer(String phone) {
         if (phone == null || (customerStore !=null && !customerStore.containsKey(phone)))
-            return Optional.empty();
+              return Optional.empty();
         return Optional.of(customerStore.get(phone));
     }
 

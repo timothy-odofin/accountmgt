@@ -14,4 +14,5 @@ ApiResponse listCustomer();
 ApiResponse listAllAccounts();
 ApiResponse listAccountsByCustomer(String customerPhone);
 ApiResponse retrieveAccount(String accountNumber,String customerPhone);
+    ApiResponse retrieveAccount(String accountNumber);
 }

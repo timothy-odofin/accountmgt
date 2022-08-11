@@ -40,4 +40,8 @@ public class AccountRoute {
     ApiResponse retrieveAccount(@RequestParam(ACCOUNT_PARAM) String accountNumber,@RequestParam(PHONE_PARAM) String customerPhone){
         return accountService.retrieveAccount(accountNumber, customerPhone);
     }
+    @GetMapping(ACCOUNT_PATH_GET)
+    ApiResponse retrieveAccount(@RequestParam(ACCOUNT_PARAM)String accountNumber){
+        return accountService.retrieveAccount(accountNumber);
+    }
 }
