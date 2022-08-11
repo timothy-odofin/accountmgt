@@ -10,7 +10,9 @@ import iobank.org.accountmgt.model.response.Transactions;
 import iobank.org.accountmgt.utils.AppUtil;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.context.annotation.ApplicationScope;
 
@@ -20,22 +22,22 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static iobank.org.accountmgt.utils.MessageUtil.ACCOUNT_NOT_FOUND;
 import static iobank.org.accountmgt.utils.MessageUtil.CUSTOMER_NOT_FOUND;
 
-@Component
+@Service
 @ApplicationScope
-@Data
 public class LocalStorage {
-    private ConcurrentHashMap<String, Customer> customerStore;
-    private ConcurrentHashMap<String, ArrayList<Transactions>> transactionStore;
+    private LinkedHashMap<String, Customer> customerStore;
+    private LinkedHashMap<String, ArrayList<Transactions>> transactionStore;
+    @PostConstruct
+    public void init(){
+        customerStore=new LinkedHashMap<>();
+        transactionStore= new LinkedHashMap<>();
+
+    }
     @Value("${BANK.CODE}")
     private String bankCode;
-
-    @PostConstruct
-    public void init() {
-        customerStore = new ConcurrentHashMap<>();
-        transactionStore = new ConcurrentHashMap<>();
-    }
 
     public List<TransactionResponse> findTransactionByAccountNumber(String accountNumber){
         if(transactionStore.isEmpty())
@@ -50,16 +52,21 @@ public class LocalStorage {
     public List<Customer> findAll() {
         if (customerStore.isEmpty())
             return new ArrayList<>();
-        return new LinkedList<>(customerStore.values());
+        ArrayList<Customer> ls = new ArrayList<>();
+        ls.addAll(customerStore.values());
+        System.out.println("Size.................."+ ls.size());
+        return ls;
     }
 
     public Optional<Customer> findCustomer(String phone) {
-        if (phone == null || !customerStore.contains(phone))
+        if (phone == null || (customerStore !=null && !customerStore.containsKey(phone)))
             return Optional.empty();
         return Optional.of(customerStore.get(phone));
     }
 
     public Optional<Accounts> findAccountByNumber(String accountNumber, String customerPhone) {
+        if(customerStore !=null && !customerStore.containsKey(customerPhone))
+            throw new RecordNotFoundException(ACCOUNT_NOT_FOUND);
         Customer customerResponse = customerStore.get(customerPhone);
         LinkedHashMap<String, Accounts> accountsResponseLinkedHashMap = customerResponse.getAccountMap();
         if (accountsResponseLinkedHashMap.containsKey(accountNumber))
@@ -71,7 +78,7 @@ public class LocalStorage {
 
     public Customer save(Customer customer) {
         String key = customer.getPhone();
-        if (customerStore.contains(key)) {
+        if (customerStore.containsKey(key)) {
             Customer storeCt = customerStore.get(key);
             storeCt.setContactAddress(customer.getContactAddress());
             storeCt.setEmail(customer.getEmail());
@@ -97,15 +104,12 @@ public class LocalStorage {
         LinkedHashMap<String, Accounts> accountMap = customer.getAccountMap();
         for (Accounts rs : accountMap.values()) {
             if (payload.getAccountType().equals(rs.getAccountType().label) && payload.getCurrency().equals(rs.getCurrency().label))
-                ;
-            return true;
+                return true;
+
         }
         return false;
     }
 
-    private List<Accounts> getAccount(Collection<Accounts> accounts) {
-        return new ArrayList<>(accounts);
-    }
 
     public List<Accounts> findAllAccount() {
         if (customerStore.isEmpty())

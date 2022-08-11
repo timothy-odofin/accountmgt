@@ -10,8 +10,10 @@ import iobank.org.accountmgt.model.request.CustomerRequest;
 import iobank.org.accountmgt.model.response.*;
 import iobank.org.accountmgt.storage.LocalStorage;
 import iobank.org.accountmgt.validation.AppValidator;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,10 +25,11 @@ import static iobank.org.accountmgt.utils.AppCode.*;
 import static iobank.org.accountmgt.utils.MessageUtil.*;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class AccountServiceImpl implements  AccountService{
-    private final LocalStorage localStorage;
+    @NonNull
+    private  LocalStorage localStorage;
 
     @Override
     public ApiResponse addCustomer(CustomerRequest payload) {
@@ -39,7 +42,7 @@ public class AccountServiceImpl implements  AccountService{
 
         Customer customerResponse = ModelMapper.mapToCustomer(payload);
         localStorage.save(customerResponse);
-        return new ApiResponse(SUCCESS,CREATED,customerResponse);
+        return new ApiResponse(SUCCESS,CREATED,PAYMENT_SUCCESSFUL);
     }
 
     @Override

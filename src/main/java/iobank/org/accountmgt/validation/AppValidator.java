@@ -22,7 +22,7 @@ public class AppValidator {
         ArrayList<String> errorList = new ArrayList<>();
         if(!StringUtils.isNumeric(payload.getAccountNumber()))
             errorList.add(INVALID_CUSTOMER_ACCOUNT_NUMBER);
-        if(payload.getStatus()==null)
+        if(payload.getEnableAccount()==null)
             errorList.add(INVALID_ACCOUNT_STATUS);
         else if (!validatePhone(payload.getCustomerPhone()))
             errorList.add(INVALID_CONTACT_PHONE);
@@ -45,9 +45,9 @@ public class AppValidator {
         ArrayList<String> errorList = new ArrayList<>();
         if(!StringUtils.isNumeric(payload.getCustomerPhone()))
             errorList.add(INVALID_CUSTOMER_NUMBER);
-         else if(AccountType.valueOfName(payload.getAccountType())==null)
+          if(AccountType.valueOfName(payload.getAccountType())==null)
              errorList.add(INVALID_ACCOUNT_TYPE);
-        else if(CurrencyType.valueOfName(payload.getCurrency())==null)
+         if(CurrencyType.valueOfName(payload.getCurrency())==null)
             errorList.add(INVALID_CURRENCY);
         return errorList.isEmpty()?"":String.join(",", errorList);
     }
@@ -55,11 +55,11 @@ public class AppValidator {
         ArrayList<String> errorList = new ArrayList<>();
         if (!validateEmail(payload.getEmail()))
             errorList.add(INVALID_EMAIL);
-        else if (!validatePhone(payload.getPhone()))
+         if (!validatePhone(payload.getPhone()))
             errorList.add(INVALID_CONTACT_PHONE);
-        else if (!validateData(payload.getContactAddress()))
+         if (!validateData(payload.getContactAddress()))
             errorList.add(INVALID_CONTACT_ADDRESS);
-        else if (!validateData(payload.getName()))
+         if (!validateData(payload.getName()))
             errorList.add(INVALID_NAME);
         return errorList.isEmpty()?"":String.join(",", errorList);
     }
@@ -74,9 +74,7 @@ public class AppValidator {
     }
 
     private static boolean validatePhone(String phone) {
-        if (phone == null || phone.isBlank() || !StringUtils.isNumeric(phone))
-            return false;
-        else if (phone.length() != 11)
+        if (phone == null || phone.isBlank() || !StringUtils.isNumeric(phone)||phone.length() != 11)
             return false;
         return true;
     }

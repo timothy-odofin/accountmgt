@@ -6,5 +6,5 @@ import lombok.Data;
 public class BlockAccountRequest {
     private String customerPhone;
     private String accountNumber;
-    private Boolean status;
+    private Boolean enableAccount;
 }

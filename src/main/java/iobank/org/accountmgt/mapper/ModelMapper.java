@@ -55,7 +55,7 @@ public class ModelMapper {
         return mapFrom.stream().filter(transaction->transaction!=null).map(transaction -> mapToTransaction(transaction)).collect(Collectors.toList());
     }
     public static List<CustomerResponse> mapToCustomerList(List<Customer> mapFrom){
-        return mapFrom.stream().filter(customer->customer!=null).map(customer -> mapToCustomer(customer)).collect(Collectors.toList());
+        return mapFrom.stream().filter(customer->customer!=null).map(ModelMapper::mapToCustomer).collect(Collectors.toList());
     }
     public static Customer mapToCustomer(CustomerRequest mapFrom){
         if(mapFrom==null)
@@ -63,8 +63,8 @@ public class ModelMapper {
         Customer mapTo = new Customer();
         mapTo.setName(mapFrom.getName());
         mapTo.setEmail(mapFrom.getEmail());
-        mapTo.setPhone(mapTo.getPhone());
-        mapTo.setContactAddress(mapTo.getContactAddress());
+        mapTo.setPhone(mapFrom.getPhone());
+        mapTo.setContactAddress(mapFrom.getContactAddress());
         return mapTo;
     }
     public static Accounts mapToAccount(AccountRequest mapFrom){
