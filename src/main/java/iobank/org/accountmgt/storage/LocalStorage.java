@@ -37,7 +37,7 @@ public class LocalStorage {
     @Value("${BANK.CODE}")
     private String bankCode;
 
-    public List<TransactionResponse> findTransactionByAccountNumber(String accountNumber){
+    public synchronized List<TransactionResponse> findTransactionByAccountNumber(String accountNumber){
             Optional<Accounts> accountsOptional = findAccount(accountNumber);
             if(accountsOptional.isPresent()){
                Accounts accounts = accountsOptional.get();
@@ -53,11 +53,41 @@ public class LocalStorage {
 
 
     }
+    private List<Transactions> getTransactions(Accounts accounts){
+        List<Transactions> ls = accounts.getTransactions();
+        if(ls.isEmpty())
+            return Collections.emptyList();
+
+        return accounts.getTransactions();
+    }
+    public synchronized List<TransactionResponse> getTransactionsByCustomer(Customer customer){
+        Map<String,Accounts> maps = customer.getAccountMap();
+        List<TransactionResponse> ls = new ArrayList<>();
+        if(maps==null || maps.isEmpty())
+            return Collections.emptyList();
+        maps.values().forEach(rs->ls.addAll(ModelMapper.mapToTransaction(getTransactions(rs))));
+        return ls;
+    }
+    public synchronized List<TransactionResponse> listTransaction(){
+       if(customerStore.isEmpty())
+           return Collections.emptyList();
+       List<TransactionResponse> ls = new ArrayList<>();
+
+       customerStore.forEach((key,customer)->ls.addAll(getTransactionsByCustomer(customer)));
+
+       if(ls.isEmpty())
+           return Collections.emptyList();
+            return  ls.stream().sorted(Comparator.comparing(TransactionResponse::getTransactionDate).reversed()).collect(Collectors.toList());
+
+
+
+
+    }
     private Optional<Accounts> findAny(Collection<Accounts> data, String accountNumber){
         return data.stream().filter(account->account.getAccountNumber().equals(accountNumber))
                 .findFirst();
     }
-    public Optional<Accounts> findAccount(String accountNumber){
+    public synchronized Optional<Accounts> findAccount(String accountNumber){
         if(customerStore.isEmpty())
             return Optional.empty();
         for(Customer ac:customerStore.values()){
@@ -70,7 +100,7 @@ public class LocalStorage {
 
 
     }
-    public List<Customer> findAll() {
+    public synchronized List<Customer> findAll() {
         if (customerStore.isEmpty())
             return new ArrayList<>();
         ArrayList<Customer> ls = new ArrayList<>();
@@ -79,13 +109,13 @@ public class LocalStorage {
         return ls;
     }
 
-    public Optional<Customer> findCustomer(String phone) {
+    public synchronized Optional<Customer> findCustomer(String phone) {
         if (phone == null || (customerStore !=null && !customerStore.containsKey(phone)))
               return Optional.empty();
         return Optional.of(customerStore.get(phone));
     }
 
-    public Optional<Accounts> findAccountByNumber(String accountNumber, String customerPhone) {
+    public synchronized Optional<Accounts> findAccountByNumber(String accountNumber, String customerPhone) {
         if(customerStore !=null && !customerStore.containsKey(customerPhone))
             throw new RecordNotFoundException(ACCOUNT_NOT_FOUND);
         Customer customerResponse = customerStore.get(customerPhone);
@@ -97,7 +127,7 @@ public class LocalStorage {
 
     }
 
-    public Customer save(Customer customer) {
+    public synchronized Customer save(Customer customer) {
         String key = customer.getPhone();
         if (customerStore.containsKey(key)) {
             Customer storeCt = customerStore.get(key);
@@ -120,7 +150,7 @@ public class LocalStorage {
         return customer;
     }
 
-    public boolean isAccountExists(AccountRequest payload) {
+    public synchronized boolean isAccountExists(AccountRequest payload) {
         Customer customer = findCustomer(payload.getCustomerPhone()).get();
         LinkedHashMap<String, Accounts> accountMap = customer.getAccountMap();
         for (Accounts rs : accountMap.values()) {
@@ -132,7 +162,7 @@ public class LocalStorage {
     }
 
 
-    public List<Accounts> findAllAccount() {
+    public synchronized List<Accounts> findAllAccount() {
         if (customerStore.isEmpty())
             return new ArrayList<>();
         List<Accounts> accountsList = new ArrayList<>();
@@ -141,14 +171,14 @@ public class LocalStorage {
         return accountsList;
     }
 
-    public List<Accounts> listAccount(String customerPhone) {
+    public synchronized List<Accounts> listAccount(String customerPhone) {
         Optional<Customer> customerOptional = findCustomer(customerPhone);
         if (customerOptional.isEmpty())
             throw new RecordNotFoundException(CUSTOMER_NOT_FOUND);
         return new LinkedList<>(customerOptional.get().getAccountMap().values());
     }
 
-    public Integer getTotalAccounts() {
+    public synchronized Integer getTotalAccounts() {
         Integer totalAccount = 0;
         for (Customer rs : customerStore.values()) {
             totalAccount += rs.getAccountMap().size();
@@ -157,7 +187,7 @@ public class LocalStorage {
         return totalAccount;
     }
 
-    public Accounts saveAccount(Accounts payload, String customerPhone) {
+    public synchronized Accounts saveAccount(Accounts payload, String customerPhone) {
         if (payload.getAccountNumber() == null || payload.getAccountNumber().isBlank())
             payload.setAccountNumber(AppUtil.generateAccountNo(getTotalAccounts(), bankCode));
         Customer customer = customerStore.get(customerPhone);
