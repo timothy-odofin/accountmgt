@@ -73,6 +73,7 @@ public class LocalStorage {
         return data.stream().filter(account->account.getAccountNumber().equals(accountNumber))
                 .findFirst();
     }
+
     public synchronized Optional<Accounts> findAccount(String accountNumber){
         if(customerStore.isEmpty())
             return Optional.empty();
@@ -84,7 +85,6 @@ public class LocalStorage {
        return Optional.empty();
 
 
-
     }
     public synchronized List<Customer> findAll() {
         if (customerStore.isEmpty())
@@ -93,12 +93,22 @@ public class LocalStorage {
         ls.addAll(customerStore.values());
         return ls;
     }
+    public synchronized Optional<Customer> findCustomerByAccountNumber(String accountNumber) {
+        if (accountNumber == null)
+            return Optional.empty();
+List<Customer> ls = findAll();
+return ls.stream()
+        .filter(customer->customer !=null && customer.getAccountMap() !=null
+                && customer.getAccountMap().containsKey(accountNumber))
+        .findFirst();
+    }
 
     public synchronized Optional<Customer> findCustomer(String phone) {
         if (phone == null || (customerStore !=null && !customerStore.containsKey(phone)))
               return Optional.empty();
         return Optional.of(customerStore.get(phone));
     }
+
 
     public synchronized Optional<Accounts> findAccountByNumber(String accountNumber, String customerPhone) {
         if(customerStore !=null && !customerStore.containsKey(customerPhone))
