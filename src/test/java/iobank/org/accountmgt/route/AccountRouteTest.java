@@ -4,12 +4,8 @@ import iobank.org.accountmgt.model.DataUtils;
 import iobank.org.accountmgt.model.response.ApiResponse;
 import iobank.org.accountmgt.model.response.CustomerResponse;
 import iobank.org.accountmgt.service.AccountService;
-import iobank.org.accountmgt.service.TransactionService;
 import iobank.org.accountmgt.storage.LocalStorage;
-import iobank.org.accountmgt.utils.MessageUtil;
 import iobank.org.accountmgt.validation.AppValidator;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -19,8 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Optional;
 
@@ -28,10 +22,13 @@ import static iobank.org.accountmgt.model.RestMapper.mapFromJson;
 import static iobank.org.accountmgt.model.RestMapper.mapToJson;
 import static iobank.org.accountmgt.utils.AccountEndpoints.ADD_PATH;
 import static iobank.org.accountmgt.utils.AccountEndpoints.CUSTOMER_ROOT;
-import static org.junit.jupiter.api.Assertions.*;
+import static iobank.org.accountmgt.utils.TestApiCode.*;
+import static iobank.org.accountmgt.utils.TestMessages.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AccountRoute.class)
 class AccountRouteTest {
@@ -45,22 +42,58 @@ class AccountRouteTest {
 
 
     @Test
-    void test_addCustomer() throws Exception {
+    void test_add_customer_return_success() throws Exception {
         try (MockedStatic<AppValidator> utilities = Mockito.mockStatic(AppValidator.class)) {
             utilities.when(()->AppValidator.isValid(DataUtils.customerData())).thenReturn("");
         }
         when(localStorage.findCustomer(any())).thenReturn(Optional.empty());
         when(localStorage.save(any())).thenReturn(DataUtils.getStoreCustomer());
         when(accountService.addCustomer(any())).thenReturn(DataUtils.getResult());
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CUSTOMER_ROOT+ADD_PATH)
+        MvcResult mvcResult = mvc.perform(post(CUSTOMER_ROOT+ADD_PATH)
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(mapToJson(DataUtils.customerData())))
-                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+                .andExpect(status().isOk()).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         ApiResponse<CustomerResponse> result = mapFromJson(content, ApiResponse.class);
-        assertEquals(result.getCode(),"200");
-        assertEquals(result.getMessage(), MessageUtil.SUCCESS);
+        assertEquals(result.getCode(),OKAY);
+        assertEquals(result.getMessage(), SUCCESS);
     }
 
+    @Test
+    void test_add_customer_return_bad_request() throws Exception {
+        try (MockedStatic<AppValidator> utilities = Mockito.mockStatic(AppValidator.class)) {
+            utilities.when(()->AppValidator.isValid(DataUtils.customerData())).thenReturn(DataUtils.badRequestData());
+        }
+        when(localStorage.findCustomer(any())).thenReturn(Optional.empty());
+        when(localStorage.save(any())).thenReturn(DataUtils.getStoreCustomer());
+        when(accountService.addCustomer(any())).thenReturn(DataUtils.getBadRequestResult());
+        MvcResult mvcResult=   mvc.perform(post(CUSTOMER_ROOT+ADD_PATH)
+                        .content(mapToJson(DataUtils.customerData()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
+        String content = mvcResult.getResponse().getContentAsString();
+        ApiResponse<String> result = mapFromJson(content, ApiResponse.class);
+        assertEquals(result.getCode(),BAD_REQUEST);
+        assertEquals(result.getMessage(), FAILED);
+        assertEquals(result.getData(),BADE_REQUEST);
+    }
+    @Test
+    void test_add_customer_return_duplicate_record() throws Exception {
+        try (MockedStatic<AppValidator> utilities = Mockito.mockStatic(AppValidator.class)) {
+            utilities.when(()->AppValidator.isValid(DataUtils.customerData())).thenReturn(DataUtils.badRequestData());
+        }
+        when(localStorage.findCustomer(any())).thenReturn(Optional.empty());
+        when(localStorage.save(any())).thenReturn(DataUtils.getStoreCustomer());
+        when(accountService.addCustomer(any())).thenReturn(DataUtils.getDuplicateResult());
+        MvcResult mvcResult=   mvc.perform(post(CUSTOMER_ROOT+ADD_PATH)
+                        .content(mapToJson(DataUtils.customerData()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
+        String content = mvcResult.getResponse().getContentAsString();
+        ApiResponse<String> result = mapFromJson(content, ApiResponse.class);
+        assertEquals(result.getCode(),DUPLICATE);
+        assertEquals(result.getMessage(), FAILED);
+        assertEquals(result.getData(),DUPLICATE_RECORD);
+    }
     @Test
     void addAccountToCustomer() {
     }

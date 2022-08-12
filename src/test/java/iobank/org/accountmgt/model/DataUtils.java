@@ -17,8 +17,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static iobank.org.accountmgt.utils.AppCode.DUPLICATE_ID;
-import static iobank.org.accountmgt.utils.AppCode.OKAY;
+import static iobank.org.accountmgt.utils.TestApiCode.*;
+import static iobank.org.accountmgt.utils.TestMessages.BADE_REQUEST;
+import static iobank.org.accountmgt.utils.TestMessages.DUPLICATE_RECORD;
 
 public class DataUtils {
     private static String getAccountNumber(){
@@ -86,6 +87,9 @@ public static CustomerRequest customerData(){
     public static List<CustomerResponse> getCustomerList(){
         return  Collections.singletonList(getCustomer());
     }
+    public static String badRequestData(){
+        return "Bad request";
+    }
 
     public static List<TransactionResponse> getTransactions(){
 
@@ -119,9 +123,13 @@ public static CustomerRequest customerData(){
     public static ApiResponse<String> getResult(){
         return new ApiResponse<>(MessageUtil.SUCCESS,OKAY, MessageUtil.CUSTOMER_CREATED);
     }
-    public static ApiResponse<String> getFailedCustomer(){
-        return new ApiResponse<>(MessageUtil.FAILED,DUPLICATE_ID, MessageUtil.DUPLICATE_RECORD);
+    public static ApiResponse<String> getBadRequestResult(){
+        return new ApiResponse<>(MessageUtil.FAILED,BAD_REQUEST,BADE_REQUEST );
     }
+    public static ApiResponse<String> getDuplicateResult(){
+        return new ApiResponse<>(MessageUtil.FAILED,DUPLICATE_ID, DUPLICATE_RECORD);
+    }
+
 
 
 }
