@@ -2,6 +2,7 @@ package iobank.org.accountmgt.utils;
 
 public class TestMessages {
     public final static String BADE_REQUEST = "Bad Request";
+
     public  final static String PAYMENT_SUCCESSFUL = "Great, transaction processed successfully.";
     public  final static String WITHDRAWAL_SUCCESSFUL = "Great, withdrawal successful.";
     public  final static String CUSTOMER_CREATED = "Great, customer created successfully";

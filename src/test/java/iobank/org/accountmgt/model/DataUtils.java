@@ -4,12 +4,12 @@ import iobank.org.accountmgt.enums.AccountType;
 import iobank.org.accountmgt.enums.ChannelType;
 import iobank.org.accountmgt.enums.CurrencyType;
 import iobank.org.accountmgt.enums.TransactionType;
+import iobank.org.accountmgt.model.request.AccountRequest;
 import iobank.org.accountmgt.model.request.CustomerRequest;
 import iobank.org.accountmgt.model.request.DepositRequest;
 import iobank.org.accountmgt.model.request.WithdrawalRequest;
 import iobank.org.accountmgt.model.response.*;
 import iobank.org.accountmgt.utils.AppUtil;
-import iobank.org.accountmgt.utils.MessageUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,8 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import static iobank.org.accountmgt.utils.TestApiCode.*;
-import static iobank.org.accountmgt.utils.TestMessages.BADE_REQUEST;
-import static iobank.org.accountmgt.utils.TestMessages.DUPLICATE_RECORD;
+import static iobank.org.accountmgt.utils.TestMessages.*;
 
 public class DataUtils {
     private static String getAccountNumber(){
@@ -42,6 +41,28 @@ public static CustomerRequest customerData(){
             .phone(getCustomerPhone())
             .build();
 }
+    public static AccountRequest accountRequest(){
+        return AccountRequest.builder()
+                .accountType("Savings")
+                .currency("NGN")
+                .customerPhone(getCustomerPhone())
+                .build();
+    }
+
+    public static Accounts accounts(){
+        return Accounts.builder()
+                .accountType(AccountType.SAVINGS)
+                .currency(CurrencyType.NAIRA)
+                .accountNumber(getAccountNumber())
+                .balance(getTransactionAmount())
+                .dateOpened(LocalDateTime.now())
+                .isActive(true)
+                .lastModified(LocalDateTime.now())
+                .transactions(new ArrayList<>())
+                .lastModified(LocalDateTime.now())
+                .build();
+    }
+
     public static DepositRequest depositData(){
         return DepositRequest.builder()
                 .accountNumber(getAccountNumber())
@@ -121,13 +142,17 @@ public static CustomerRequest customerData(){
             .build();
     }
     public static ApiResponse<String> getResult(){
-        return new ApiResponse<>(MessageUtil.SUCCESS,OKAY, MessageUtil.CUSTOMER_CREATED);
+        return new ApiResponse<>(SUCCESS,OKAY, CUSTOMER_CREATED);
+    }
+
+    public static ApiResponse<String> getNotFoundResult(){
+        return new ApiResponse<>(FAILED,NOT_FOUND, RECORD_NOT_FOUND);
     }
     public static ApiResponse<String> getBadRequestResult(){
-        return new ApiResponse<>(MessageUtil.FAILED,BAD_REQUEST,BADE_REQUEST );
+        return new ApiResponse<>(FAILED,BAD_REQUEST,BADE_REQUEST );
     }
     public static ApiResponse<String> getDuplicateResult(){
-        return new ApiResponse<>(MessageUtil.FAILED,DUPLICATE_ID, DUPLICATE_RECORD);
+        return new ApiResponse<>(FAILED,DUPLICATE_ID, DUPLICATE_RECORD);
     }
 
 

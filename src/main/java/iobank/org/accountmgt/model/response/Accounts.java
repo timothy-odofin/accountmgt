@@ -3,14 +3,16 @@ package iobank.org.accountmgt.model.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import iobank.org.accountmgt.enums.AccountType;
 import iobank.org.accountmgt.enums.CurrencyType;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Data
 @ToString
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Accounts {
     private String accountNumber;
     private AccountType accountType;
