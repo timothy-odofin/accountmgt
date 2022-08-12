@@ -9,6 +9,7 @@ import iobank.org.accountmgt.service.AccountService;
 import iobank.org.accountmgt.storage.LocalStorage;
 import iobank.org.accountmgt.validation.AppValidator;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -18,9 +19,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,13 +44,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AccountRouteTest {
 
     @Autowired
+    private WebApplicationContext webApplicationContext;
     private MockMvc mvc;
+
+
     @MockBean
     private AccountService accountService;
     @MockBean
     private LocalStorage localStorage;
 
-
+    @BeforeEach
+    public void setUp() {
+        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
     @Test
     void test_add_customer_return_success() throws Exception {
         try (MockedStatic<AppValidator> utilities = Mockito.mockStatic(AppValidator.class)) {
