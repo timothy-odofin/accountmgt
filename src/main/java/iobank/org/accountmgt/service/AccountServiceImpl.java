@@ -31,7 +31,6 @@ public class AccountServiceImpl implements  AccountService{
     @NonNull
     private  LocalStorage localStorage;
 
-
     @Override
     public ApiResponse addCustomer(CustomerRequest payload) {
         String validationResult = AppValidator.isValid(payload);
