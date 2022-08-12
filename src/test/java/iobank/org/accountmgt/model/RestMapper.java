@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 public class RestMapper {
     private static Gson getGson(){

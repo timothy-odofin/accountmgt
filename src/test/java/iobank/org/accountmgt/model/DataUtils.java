@@ -4,10 +4,8 @@ import iobank.org.accountmgt.enums.AccountType;
 import iobank.org.accountmgt.enums.ChannelType;
 import iobank.org.accountmgt.enums.CurrencyType;
 import iobank.org.accountmgt.enums.TransactionType;
-import iobank.org.accountmgt.model.request.AccountRequest;
-import iobank.org.accountmgt.model.request.CustomerRequest;
-import iobank.org.accountmgt.model.request.DepositRequest;
-import iobank.org.accountmgt.model.request.WithdrawalRequest;
+import iobank.org.accountmgt.mapper.ModelMapper;
+import iobank.org.accountmgt.model.request.*;
 import iobank.org.accountmgt.model.response.*;
 import iobank.org.accountmgt.utils.AppUtil;
 
@@ -108,6 +106,9 @@ public static CustomerRequest customerData(){
     public static List<CustomerResponse> getCustomerList(){
         return  Collections.singletonList(getCustomer());
     }
+    public static List<AccountsResponse> getAccountList(){
+        return Collections.singletonList(ModelMapper.mapToAccountsResponse(accounts()));
+    }
     public static String badRequestData(){
         return "Bad request";
     }
@@ -129,6 +130,13 @@ public static CustomerRequest customerData(){
 
     }
 
+    public static BlockAccountRequest blockAccount(){
+        return BlockAccountRequest.builder()
+                .accountNumber(getAccountNumber())
+                .enableAccount(false)
+                .customerPhone(getCustomerPhone())
+                .build();
+    }
     public static AccountsResponse retrieveAccount(){
     return AccountsResponse.builder()
             .lastModified(LocalDateTime.now())
@@ -154,6 +162,25 @@ public static CustomerRequest customerData(){
     public static ApiResponse<String> getDuplicateResult(){
         return new ApiResponse<>(FAILED,DUPLICATE_ID, DUPLICATE_RECORD);
     }
+
+    public static ApiResponse<String> getAccountSuspendedResult(){
+        return new ApiResponse<>(SUCCESS,OKAY, ACCOUNT_SUSPENDED_RESP);
+    }
+    public static ApiResponse<List<CustomerResponse>> getListCustomerResult(){
+        return new ApiResponse<>(SUCCESS,OKAY, getCustomerList());
+    }
+
+    public static ApiResponse<List<AccountsResponse>> getListAccountResult(){
+        return new ApiResponse<>(SUCCESS,OKAY, getAccountList());
+    }
+    public static ApiResponse<AccountsResponse> retrieveAccountResult(){
+        return new ApiResponse<>(SUCCESS,OKAY, retrieveAccount());
+    }
+
+    public static ApiResponse<String> retrieveFailedAccountResult(){
+        return new ApiResponse<>(FAILED,NOT_FOUND, ACCOUNT_NOT_FOUND);
+    }
+
 
 
 
