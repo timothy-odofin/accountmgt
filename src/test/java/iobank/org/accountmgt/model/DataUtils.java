@@ -1,5 +1,6 @@
 package iobank.org.accountmgt.model;
 
+import com.google.gson.internal.LinkedTreeMap;
 import iobank.org.accountmgt.enums.AccountType;
 import iobank.org.accountmgt.enums.ChannelType;
 import iobank.org.accountmgt.enums.CurrencyType;
@@ -15,6 +16,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static iobank.org.accountmgt.utils.AppCode.OKAY;
+import static iobank.org.accountmgt.utils.MessageUtil.SUCCESS;
+import static iobank.org.accountmgt.utils.MessageUtil.WITHDRAWAL_SUCCESSFUL;
 import static iobank.org.accountmgt.utils.TestApiCode.*;
 import static iobank.org.accountmgt.utils.TestMessages.*;
 
@@ -73,7 +77,7 @@ public static CustomerRequest customerData(){
     public static WithdrawalRequest withdrawalData(){
         return WithdrawalRequest.builder()
                 .accountNumber(getAccountNumber())
-                .amount(getTransactionAmount())
+                .amount(2000.0)
                 .channel("Cash")
                 .narration("Testing deposit")
                 .build();
@@ -100,8 +104,13 @@ public static CustomerRequest customerData(){
                 .lastModified(LocalDateTime.now())
                 .email("odofin@swipe.ng")
                 .contactAddress(getContactAddress())
-                .accountMap(new LinkedHashMap<>())
+                .accountMap(getAccountMap())
                 .build();
+    }
+    public static LinkedHashMap<String, Accounts> getAccountMap(){
+        LinkedHashMap<String,Accounts> maps = new LinkedHashMap<>();
+        maps.put(getAccountNumber(),accounts());
+        return maps;
     }
     public static List<CustomerResponse> getCustomerList(){
         return  Collections.singletonList(getCustomer());
@@ -179,6 +188,8 @@ public static CustomerRequest customerData(){
 
     public static ApiResponse<String> retrieveFailedAccountResult(){
         return new ApiResponse<>(FAILED,NOT_FOUND, ACCOUNT_NOT_FOUND);
+    } public static ApiResponse<String> getWithdrawalResult(){
+        return new  ApiResponse(SUCCESS, OKAY, WITHDRAWAL_SUCCESSFUL);
     }
 
 

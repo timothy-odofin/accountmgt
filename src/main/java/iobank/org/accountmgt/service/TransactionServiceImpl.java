@@ -8,7 +8,6 @@ import iobank.org.accountmgt.model.request.WithdrawalRequest;
 import iobank.org.accountmgt.model.response.*;
 import iobank.org.accountmgt.storage.LocalStorage;
 import iobank.org.accountmgt.utils.AppUtil;
-import iobank.org.accountmgt.utils.SequenceUtil;
 import iobank.org.accountmgt.validation.AppValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +65,7 @@ public class TransactionServiceImpl implements TransactionService {
             return new ApiResponse(SUCCESS, OKAY, WITHDRAWAL_SUCCESSFUL);
         }
         log.error(INSUFFICIENT_BALANCE);
-        return new ApiResponse(SUCCESS, OKAY, INSUFFICIENT_BALANCE);
+        return new ApiResponse(FAILED, OKAY, INSUFFICIENT_BALANCE);
     }
 
     @Override
