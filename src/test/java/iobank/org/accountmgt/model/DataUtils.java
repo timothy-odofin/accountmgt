@@ -244,5 +244,12 @@ public static CustomerRequest customerData(){
         return new  ApiResponse(SUCCESS, OKAY, PAYMENT_SUCCESSFUL);
     }
 
+    public static ApiResponse<List<TransactionResponse>> getTransactionResult(){
+        return new  ApiResponse(SUCCESS, OKAY, getTransactions());
+    }
+
+    public static ApiResponse<List<TransactionResponse>> getTransactionEmptyResult(){
+        return new  ApiResponse(SUCCESS, OKAY, Collections.emptyList());
+    }
 
 }

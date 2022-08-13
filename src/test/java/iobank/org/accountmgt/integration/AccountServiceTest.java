@@ -1,6 +1,8 @@
 package iobank.org.accountmgt.integration;
 
 import com.google.gson.internal.LinkedTreeMap;
+import iobank.org.accountmgt.exception.BadRequestException;
+import iobank.org.accountmgt.exception.DuplicationRecordException;
 import iobank.org.accountmgt.exception.RecordNotFoundException;
 import iobank.org.accountmgt.mapper.ModelMapper;
 import iobank.org.accountmgt.model.DataUtils;
@@ -33,11 +35,7 @@ import static iobank.org.accountmgt.utils.MessageUtil.ACCOUNT_SUSPENDED_RESP;
 import static iobank.org.accountmgt.utils.MessageUtil.DUPLICATE_ACCOUNT;
 import static iobank.org.accountmgt.utils.MessageUtil.RECORD_NOT_FOUND;
 import static iobank.org.accountmgt.utils.TestApiCode.*;
-import static iobank.org.accountmgt.utils.TestMessages.ACCOUNT_NOT_FOUND;
-import static iobank.org.accountmgt.utils.TestMessages.CUSTOMER_CREATED;
-import static iobank.org.accountmgt.utils.TestMessages.DUPLICATE_RECORD;
-import static iobank.org.accountmgt.utils.TestMessages.FAILED;
-import static iobank.org.accountmgt.utils.TestMessages.SUCCESS;
+import static iobank.org.accountmgt.utils.TestMessages.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -86,8 +84,10 @@ public class AccountServiceTest {
         assertEquals(result.getCode(), BAD_REQUEST);
         assertEquals(result.getMessage(), FAILED);
         assertEquals(result.getData(), AppValidator.isValid(payload));
-        ApiResponse<List<CustomerResponse>> fetchList = accountService.listCustomer();
-        assertEquals(fetchList.getData().size(), 0);
+        BadRequestException thrown = assertThrows(BadRequestException.class, () -> {
+            accountService.addCustomer(payload);
+        }, AppValidator.isValid(payload));
+        assertEquals(thrown.getMessage(), AppValidator.isValid(payload));
 
 
     }
@@ -105,17 +105,18 @@ public class AccountServiceTest {
     @Test
     void test_add_customer_return_duplicate_record() throws Exception {
         CustomerRequest payload = DataUtils.customerData();
-        initCustomerData();
+
         MvcResult mvcResult = mvc.perform(post(CUSTOMER_ROOT + ADD_PATH)
                         .contentType(MediaType.APPLICATION_JSON_VALUE).content(mapToJson(payload)))
                 .andExpect(status().isOk()).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         ApiResponse<String> result = mapFromJson(content, ApiResponse.class);
-        assertEquals(result.getCode(), DUPLICATE);
-        assertEquals(result.getMessage(), FAILED);
-        assertEquals(result.getData(), DUPLICATE_RECORD);
-        ApiResponse<List<CustomerResponse>> fetchList = accountService.listCustomer();
-        assertEquals(fetchList.getData().size(), 1);
+        assertEquals(result.getCode(), CREATED);
+        assertEquals(result.getMessage(), SUCCESS);
+        DuplicationRecordException thrown = assertThrows(DuplicationRecordException.class, () -> {
+            accountService.addCustomer(payload);
+        }, DUPLICATE_RECORD);
+        assertEquals(thrown.getMessage(), DUPLICATE_RECORD);
 
 
     }
@@ -150,8 +151,10 @@ public class AccountServiceTest {
         assertEquals(result.getCode(), BAD_REQUEST);
         assertEquals(result.getMessage(), FAILED);
         assertEquals(result.getData(), AppValidator.isValid(payload));
-        ApiResponse<List<Accounts>> fetchList = accountService.listAllAccounts();
-        assertEquals(fetchList.getData().size(), 0);
+        BadRequestException thrown = assertThrows(BadRequestException.class, () -> {
+            accountService.addAccountToCustomer(payload);
+        }, AppValidator.isValid(payload));
+        assertEquals(thrown.getMessage(), AppValidator.isValid(payload));
 
     }
 
@@ -176,19 +179,24 @@ public class AccountServiceTest {
 
     @Test
     void test_add_account_to_customer_return_duplicate_record() throws Exception {
-        initCustomerData();
+
+
         AccountRequest payload = DataUtils.accountRequest();
-        localStorage.saveAccount(ModelMapper.mapToAccount(payload), payload.getCustomerPhone());
+        mvc.perform(post(CUSTOMER_ROOT + ADD_PATH)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE).content(mapToJson(DataUtils.customerData())))
+                .andExpect(status().isOk()).andReturn();
+
         MvcResult mvcResult = mvc.perform(post(CUSTOMER_ROOT + ADD_ACCOUNT_PATH)
                         .contentType(MediaType.APPLICATION_JSON_VALUE).content(mapToJson(DataUtils.accountRequest())))
                 .andExpect(status().isOk()).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         ApiResponse<String> result = mapFromJson(content, ApiResponse.class);
-        assertEquals(result.getCode(), DUPLICATE);
-        assertEquals(result.getMessage(), FAILED);
-        assertEquals(result.getData(), DUPLICATE_ACCOUNT);
-        ApiResponse<List<Accounts>> fetchList = accountService.listAllAccounts();
-        assertEquals(fetchList.getData().size(), 1);
+        assertEquals(result.getCode(), CREATED);
+        assertEquals(result.getMessage(), SUCCESS);
+        DuplicationRecordException thrown = assertThrows(DuplicationRecordException.class, () -> {
+            accountService.addAccountToCustomer(payload);
+        }, DUPLICATE_ACCOUNT);
+        assertEquals(thrown.getMessage(), DUPLICATE_ACCOUNT);
 
 
     }

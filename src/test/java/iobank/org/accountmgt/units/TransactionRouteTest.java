@@ -1,7 +1,9 @@
 package iobank.org.accountmgt.units;
 
 import iobank.org.accountmgt.model.DataUtils;
+import iobank.org.accountmgt.model.response.AccountsResponse;
 import iobank.org.accountmgt.model.response.ApiResponse;
+import iobank.org.accountmgt.model.response.TransactionResponse;
 import iobank.org.accountmgt.service.TransactionService;
 import iobank.org.accountmgt.storage.LocalStorage;
 import iobank.org.accountmgt.validation.AppValidator;
@@ -19,10 +21,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static iobank.org.accountmgt.model.RestMapper.mapFromJson;
 import static iobank.org.accountmgt.model.RestMapper.mapToJson;
+import static iobank.org.accountmgt.utils.AccountEndpoints.CUSTOMER_ROOT;
+import static iobank.org.accountmgt.utils.AccountEndpoints.LIST_ACCOUNT_PATH;
 import static iobank.org.accountmgt.utils.MessageUtil.PAYMENT_SUCCESSFUL;
 import static iobank.org.accountmgt.utils.TestApiCode.*;
 import static iobank.org.accountmgt.utils.TestMessages.FAILED;
@@ -31,6 +37,7 @@ import static iobank.org.accountmgt.utils.TransactionEndpoints.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -102,7 +109,12 @@ class TransactionRouteTest {
     }
     @Test
     void test_deposit_success() throws Exception {
-               when(transactionService.deposit(any())).thenReturn(DataUtils.getDepositResult());
+        try (MockedStatic<AppValidator> utilities = Mockito.mockStatic(AppValidator.class)) {
+            utilities.when(()->AppValidator.isValid(DataUtils.depositData())).thenReturn("");
+        }
+        when(localStorage.findCustomerByAccountNumber(any())).thenReturn(Optional.of(DataUtils.getStoreCustomer()));
+        when(localStorage.save(any())).thenReturn(DataUtils.getStoreCustomer());
+        when(transactionService.deposit(any())).thenReturn(DataUtils.getDepositResult());
         MvcResult mvcResult = mvc.perform(post(TRANSACTION_ROOT+DEPOSIT_PATH)
                         .contentType(MediaType.APPLICATION_JSON_VALUE).content(mapToJson(DataUtils.depositData())))
                 .andExpect(status().isOk()).andReturn();
@@ -115,6 +127,11 @@ class TransactionRouteTest {
 
     @Test
     void test_deposit_fail() throws Exception {
+        try (MockedStatic<AppValidator> utilities = Mockito.mockStatic(AppValidator.class)) {
+            utilities.when(()->AppValidator.isValid(DataUtils.depositData())).thenReturn("");
+        }
+        when(localStorage.findCustomerByAccountNumber(any())).thenReturn(Optional.of(DataUtils.getStoreCustomer()));
+        when(localStorage.save(any())).thenReturn(DataUtils.getStoreCustomer());
         when(transactionService.deposit(any())).thenReturn(DataUtils.getNotFoundResult());
         MvcResult mvcResult = mvc.perform(post(TRANSACTION_ROOT+DEPOSIT_PATH)
                         .contentType(MediaType.APPLICATION_JSON_VALUE).content(mapToJson(DataUtils.depositData())))
@@ -127,10 +144,31 @@ class TransactionRouteTest {
 
 
     @Test
-    void listTransaction() {
+    void test_listTransaction_success() throws Exception {
+        when(localStorage.listTransaction()).thenReturn(DataUtils.getTransactions());
+        when(localStorage.findAccount(any())).thenReturn(Optional.of(DataUtils.accounts()));
+        when(transactionService.listTransaction(any())).thenReturn(DataUtils.getTransactionResult());
+        MvcResult mvcResult = mvc.perform(get(TRANSACTION_ROOT+LIST_PATH)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        String content = mvcResult.getResponse().getContentAsString();
+        ApiResponse<List<TransactionResponse>> result = mapFromJson(content, ApiResponse.class);
+        assertEquals(result.getCode(),OKAY);
+        assertEquals(result.getMessage(), SUCCESS);
+        assertEquals(result.getData().size(),DataUtils.getTransactions().size());
     }
 
+
     @Test
-    void listTransactionByDate() {
+    void listTransactionByDate() throws Exception {
+        when(localStorage.listTransaction()).thenReturn(DataUtils.getTransactions());
+        when(localStorage.findAccount(any())).thenReturn(Optional.of(DataUtils.accounts()));
+        when(transactionService.listTransactionByDate(any(),any())).thenReturn(DataUtils.getTransactionResult());
+        MvcResult mvcResult = mvc.perform(get(TRANSACTION_ROOT+TRANSACTION_LIST_BY_ACCOUNT+"?"+ACCOUNT_PARAM+"=123456789&"+DATE_PARAM+"=2022-01-10")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        String content = mvcResult.getResponse().getContentAsString();
+        ApiResponse<List<TransactionResponse>> result = mapFromJson(content, ApiResponse.class);
+        assertEquals(result.getCode(),OKAY);
+        assertEquals(result.getMessage(), SUCCESS);
+        assertEquals(result.getData().size(),DataUtils.getTransactions().size());
     }
 }
