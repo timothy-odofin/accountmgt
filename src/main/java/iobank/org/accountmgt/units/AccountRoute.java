@@ -1,4 +1,4 @@
-package iobank.org.accountmgt.route;
+package iobank.org.accountmgt.units;
 
 import iobank.org.accountmgt.model.request.AccountRequest;
 import iobank.org.accountmgt.model.request.BlockAccountRequest;

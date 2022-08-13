@@ -35,6 +35,41 @@ public class DataUtils {
     private static String getContactAddress(){
         return "No2 Rock City Avenue, Goshen Estate Abeokuta, Ogun State";
     }
+
+    public static CustomerRequest customerInvalidData(){
+        return CustomerRequest.builder()
+                .contactAddress(getContactAddress())
+                .email("odofin@swipe.ng")
+                .name("O")
+                .phone("")
+                .build();
+    }
+    public static AccountRequest accountInvalidRequest(){
+        return AccountRequest.builder()
+                .accountType("Savings")
+                .currency("NGN")
+                .customerPhone("0983")
+                .build();
+    }
+
+
+    public static DepositRequest depositInvalidData(){
+        return DepositRequest.builder()
+                .accountNumber("")
+                .amount(getTransactionAmount())
+                .channel("")
+                .narration("Testing deposit")
+                .build();
+    }
+
+    public static WithdrawalRequest withdrawalInvalidData(){
+        return WithdrawalRequest.builder()
+                .accountNumber(getAccountNumber())
+                .amount(0.0)
+                .channel("")
+                .narration("Testing deposit")
+                .build();
+    }
 public static CustomerRequest customerData(){
     return CustomerRequest.builder()
             .contactAddress(getContactAddress())

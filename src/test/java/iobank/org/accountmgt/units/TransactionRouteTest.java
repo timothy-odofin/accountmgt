@@ -1,10 +1,7 @@
-package iobank.org.accountmgt.route;
+package iobank.org.accountmgt.units;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import iobank.org.accountmgt.model.DataUtils;
 import iobank.org.accountmgt.model.response.ApiResponse;
-import iobank.org.accountmgt.model.response.CustomerResponse;
-import iobank.org.accountmgt.service.AccountService;
 import iobank.org.accountmgt.service.TransactionService;
 import iobank.org.accountmgt.storage.LocalStorage;
 import iobank.org.accountmgt.validation.AppValidator;
@@ -26,8 +23,6 @@ import java.util.Optional;
 
 import static iobank.org.accountmgt.model.RestMapper.mapFromJson;
 import static iobank.org.accountmgt.model.RestMapper.mapToJson;
-import static iobank.org.accountmgt.utils.AccountEndpoints.ADD_PATH;
-import static iobank.org.accountmgt.utils.AccountEndpoints.CUSTOMER_ROOT;
 import static iobank.org.accountmgt.utils.TestApiCode.OKAY;
 import static iobank.org.accountmgt.utils.TestMessages.SUCCESS;
 import static iobank.org.accountmgt.utils.TransactionEndpoints.TRANSACTION_ROOT;

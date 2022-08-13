@@ -1,4 +1,4 @@
-package iobank.org.accountmgt.route;
+package iobank.org.accountmgt.units;
 
 import iobank.org.accountmgt.model.request.DepositRequest;
 import iobank.org.accountmgt.model.request.WithdrawalRequest;
