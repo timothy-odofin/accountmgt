@@ -17,6 +17,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import static iobank.org.accountmgt.utils.AppCode.OKAY;
+import static iobank.org.accountmgt.utils.MessageUtil.ACCOUNT_SUSPENDED;
+import static iobank.org.accountmgt.utils.MessageUtil.PAYMENT_SUCCESSFUL;
 import static iobank.org.accountmgt.utils.MessageUtil.SUCCESS;
 import static iobank.org.accountmgt.utils.MessageUtil.WITHDRAWAL_SUCCESSFUL;
 import static iobank.org.accountmgt.utils.TestApiCode.*;
@@ -230,11 +232,17 @@ public static CustomerRequest customerData(){
 
     public static ApiResponse<String> retrieveFailedAccountResult(){
         return new ApiResponse<>(FAILED,NOT_FOUND, ACCOUNT_NOT_FOUND);
-    } public static ApiResponse<String> getWithdrawalResult(){
+    }
+    public static ApiResponse<String> getWithdrawalResult(){
         return new  ApiResponse(SUCCESS, OKAY, WITHDRAWAL_SUCCESSFUL);
     }
+    public static ApiResponse<String> getWithdrawalAccountNotActiveResult(){
+        return new  ApiResponse(FAILED, BAD_REQUEST, ACCOUNT_SUSPENDED);
+    }
 
-
+    public static ApiResponse<String> getDepositResult(){
+        return new  ApiResponse(SUCCESS, OKAY, PAYMENT_SUCCESSFUL);
+    }
 
 
 }

@@ -40,7 +40,6 @@ public class TransactionServiceImpl implements TransactionService {
         String errorResult = AppValidator.isValid(payload);
         if (!errorResult.isBlank())
             throw new BadRequestException(errorResult);
-
         Customer customer = validateCustomer(payload.getAccountNumber());
         LinkedHashMap<String, Accounts> accountsLinkedHashMap = customer.getAccountMap();
         Accounts accounts = accountsLinkedHashMap.get(payload.getAccountNumber());
