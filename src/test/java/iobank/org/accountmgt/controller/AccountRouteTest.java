@@ -1,4 +1,4 @@
-package iobank.org.accountmgt.units;
+package iobank.org.accountmgt.controller;
 
 import com.google.gson.internal.LinkedTreeMap;
 import iobank.org.accountmgt.model.DataUtils;
@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AccountRoute.class)
+@WebMvcTest(AccountController.class)
 @Slf4j
 class AccountRouteTest {
 

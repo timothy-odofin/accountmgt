@@ -1,4 +1,4 @@
-package iobank.org.accountmgt.units;
+package iobank.org.accountmgt.controller;
 
 import iobank.org.accountmgt.model.request.DepositRequest;
 import iobank.org.accountmgt.model.request.WithdrawalRequest;
@@ -18,7 +18,7 @@ import static iobank.org.accountmgt.utils.TransactionEndpoints.*;
 @RestController
 @RequestMapping(TRANSACTION_ROOT)
 @RequiredArgsConstructor
-public class TransactionRoute {
+public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping(WITHDRAWAL_PATH)

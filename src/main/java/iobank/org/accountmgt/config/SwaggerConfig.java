@@ -27,7 +27,7 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("iobank.org.accountmgt.route"))
+                .apis(RequestHandlerSelectors.basePackage("iobank.org.accountmgt.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }

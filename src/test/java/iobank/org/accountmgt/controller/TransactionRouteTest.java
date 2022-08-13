@@ -1,7 +1,6 @@
-package iobank.org.accountmgt.units;
+package iobank.org.accountmgt.controller;
 
 import iobank.org.accountmgt.model.DataUtils;
-import iobank.org.accountmgt.model.response.AccountsResponse;
 import iobank.org.accountmgt.model.response.ApiResponse;
 import iobank.org.accountmgt.model.response.TransactionResponse;
 import iobank.org.accountmgt.service.TransactionService;
@@ -21,14 +20,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static iobank.org.accountmgt.model.RestMapper.mapFromJson;
 import static iobank.org.accountmgt.model.RestMapper.mapToJson;
-import static iobank.org.accountmgt.utils.AccountEndpoints.CUSTOMER_ROOT;
-import static iobank.org.accountmgt.utils.AccountEndpoints.LIST_ACCOUNT_PATH;
 import static iobank.org.accountmgt.utils.MessageUtil.PAYMENT_SUCCESSFUL;
 import static iobank.org.accountmgt.utils.TestApiCode.*;
 import static iobank.org.accountmgt.utils.TestMessages.FAILED;
@@ -41,7 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(TransactionRoute.class)
+@WebMvcTest(TransactionController.class)
 @Slf4j
 class TransactionRouteTest {
 

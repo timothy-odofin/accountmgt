@@ -219,11 +219,16 @@ public class TransactionServiceTest {
         ApiResponse<String> result = mapFromJson(content, ApiResponse.class);
         assertEquals(result.getCode(), OKAY);
         assertEquals(result.getMessage(), SUCCESS);
-        LinkedHashMap<String,Accounts> map =customerOptional.get().getAccountMap();
-        assertNotNull(map);
-        assertNotNull(map.get(payload.getAccountNumber()));
-        Accounts ac = map.get(payload.getAccountNumber());
-        assertNotEquals(ac.getBalance(), (oldAccount.getBalance() + payload.getAmount()));
+
+        //Withdraw from account after saving
+        MvcResult mvcWithdrawalResult = mvc.perform(post(TRANSACTION_ROOT + WITHDRAWAL_PATH)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(mapToJson(DataUtils.withdrawalData())))
+                .andExpect(status().isOk()).andReturn();
+        String contentWithdrawal = mvcWithdrawalResult.getResponse().getContentAsString();
+        ApiResponse<String> resultWithdrawal = mapFromJson(contentWithdrawal, ApiResponse.class);
+        assertEquals(resultWithdrawal.getCode(), OKAY);
+        assertEquals(resultWithdrawal.getMessage(), SUCCESS);
     }
 
     @Test
@@ -243,9 +248,7 @@ public class TransactionServiceTest {
                 .andExpect(status().isOk()).andReturn();
 
         MvcResult mvcResult = mvc.perform(get(TRANSACTION_ROOT + LIST_PATH)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(mapToJson(payload)))
-                .andExpect(status().isOk()).andReturn();
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         ApiResponse<List<TransactionResponse>> result = mapFromJson(content, ApiResponse.class);
         assertEquals(result.getCode(), OKAY);

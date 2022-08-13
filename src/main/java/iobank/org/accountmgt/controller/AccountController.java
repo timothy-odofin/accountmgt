@@ -1,4 +1,4 @@
-package iobank.org.accountmgt.units;
+package iobank.org.accountmgt.controller;
 
 import iobank.org.accountmgt.model.request.AccountRequest;
 import iobank.org.accountmgt.model.request.BlockAccountRequest;
@@ -13,7 +13,7 @@ import static iobank.org.accountmgt.utils.AccountEndpoints.*;
 @RestController
 @RequestMapping(CUSTOMER_ROOT)
 @RequiredArgsConstructor
-public class AccountRoute {
+public class AccountController {
     private final AccountService accountService;
 
     @PostMapping(ADD_PATH)
