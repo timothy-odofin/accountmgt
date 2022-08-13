@@ -11,4 +11,6 @@ public class AccountRequest {
     private String customerPhone;
     private String currency;
     private String accountType;
+    private Double deposit;
+    private Boolean isActive;
 }

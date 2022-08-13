@@ -111,11 +111,11 @@ public class ModelMapper {
             return null;
         Accounts mapTo = new Accounts();
         mapTo.setAccountType(AccountType.valueOfName(mapFrom.getAccountType()));
-        mapTo.setBalance(0.0);
+        mapTo.setBalance(mapFrom.getDeposit());
         mapTo.setLastModified(LocalDateTime.now());
         mapTo.setCurrency(CurrencyType.valueOfName(mapFrom.getCurrency()));
         mapTo.setDateOpened(LocalDateTime.now());
-        mapTo.setIsActive(true);
+        mapTo.setIsActive(mapFrom.getIsActive());
         return mapTo;
     }
 }

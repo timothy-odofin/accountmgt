@@ -1,5 +1,6 @@
 package iobank.org.accountmgt.service;
 
+import iobank.org.accountmgt.exception.AccountSuspendedException;
 import iobank.org.accountmgt.exception.BadRequestException;
 import iobank.org.accountmgt.exception.RecordNotFoundException;
 import iobank.org.accountmgt.mapper.ModelMapper;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static iobank.org.accountmgt.utils.AppCode.INSSUFICIENT;
 import static iobank.org.accountmgt.utils.AppCode.OKAY;
 import static iobank.org.accountmgt.utils.MessageUtil.*;
 
@@ -44,7 +46,7 @@ public class TransactionServiceImpl implements TransactionService {
         LinkedHashMap<String, Accounts> accountsLinkedHashMap = customer.getAccountMap();
         Accounts accounts = accountsLinkedHashMap.get(payload.getAccountNumber());
         if(!accounts.getIsActive())
-            throw new BadRequestException(ACCOUNT_SUSPENDED);
+            throw new AccountSuspendedException(ACCOUNT_SUSPENDED);
         if(accounts.getBalance()>=payload.getAmount()) {
             ArrayList<Transactions> transactions =getTransaction(accounts);
             Transactions transaction = ModelMapper.mapToRequest(payload);
@@ -61,10 +63,10 @@ public class TransactionServiceImpl implements TransactionService {
             customer.setAccountMap(accountsLinkedHashMap);
             localStorage.save(customer);
             log.info(WITHDRAWAL_SUCCESSFUL);
-            return new ApiResponse(SUCCESS, OKAY, WITHDRAWAL_SUCCESSFUL);
+            return new ApiResponse(SUCCESS, OKAY, WITHDRAWAL_SUCCESSFUL).addMeta("balance", balance);
         }
         log.error(INSUFFICIENT_BALANCE);
-        return new ApiResponse(FAILED, OKAY, INSUFFICIENT_BALANCE);
+        return new ApiResponse(FAILED, INSSUFICIENT, INSUFFICIENT_BALANCE);
     }
 
     @Override

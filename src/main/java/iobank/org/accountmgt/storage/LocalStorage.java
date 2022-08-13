@@ -195,7 +195,7 @@ return ls.stream()
         if (payload.getAccountNumber() == null || payload.getAccountNumber().isBlank())
             payload.setAccountNumber(AppUtil.generateAccountNo(getTotalAccounts(), bankCode));
         Customer customer = customerStore.get(customerPhone);
-        LinkedHashMap<String, Accounts> accountMap = customer.getAccountMap();
+        LinkedHashMap<String, Accounts> accountMap = customer.getAccountMap()==null?new LinkedHashMap<>():customer.getAccountMap();
         payload.setTransactions(new ArrayList<>());
         accountMap.put(payload.getAccountNumber(), payload);
         customer.setAccountMap(accountMap);

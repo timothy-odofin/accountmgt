@@ -84,6 +84,8 @@ public static CustomerRequest customerData(){
         return AccountRequest.builder()
                 .accountType("Savings")
                 .currency("NGN")
+                .deposit(10000.0)
+                .isActive(true)
                 .customerPhone(getCustomerPhone())
                 .build();
     }
@@ -114,9 +116,9 @@ public static CustomerRequest customerData(){
     public static WithdrawalRequest withdrawalData(){
         return WithdrawalRequest.builder()
                 .accountNumber(getAccountNumber())
-                .amount(2000.0)
+                .amount(5000.0)
                 .channel("Cash")
-                .narration("Testing deposit")
+                .narration("Testing withdrawal")
                 .build();
     }
 
