@@ -116,7 +116,7 @@ log.info(ACCOUNT_SUSPENDED_RESP);
     }
 
     @Override
-    public ApiResponse retrieveAccount(String accountNumber) {
+    public ApiResponse<List<AccountsResponse>> retrieveAccount(String accountNumber) {
         Optional<Accounts> accountsOptional = localStorage.findAccount(accountNumber);
 
         if(accountsOptional.isEmpty())

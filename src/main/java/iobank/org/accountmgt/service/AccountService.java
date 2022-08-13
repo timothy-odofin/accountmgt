@@ -4,7 +4,10 @@ import io.swagger.annotations.Api;
 import iobank.org.accountmgt.model.request.AccountRequest;
 import iobank.org.accountmgt.model.request.BlockAccountRequest;
 import iobank.org.accountmgt.model.request.CustomerRequest;
+import iobank.org.accountmgt.model.response.Accounts;
 import iobank.org.accountmgt.model.response.ApiResponse;
+
+import java.util.List;
 
 public interface AccountService {
 ApiResponse addCustomer(CustomerRequest payload);

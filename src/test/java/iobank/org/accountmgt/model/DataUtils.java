@@ -24,7 +24,7 @@ import static iobank.org.accountmgt.utils.TestMessages.*;
 
 public class DataUtils {
     private static String getAccountNumber(){
-        return "1234567898";
+        return "0580000016";
     }
     private static Double getTransactionAmount(){
         return 5000.0;
@@ -47,7 +47,7 @@ public class DataUtils {
     public static AccountRequest accountInvalidRequest(){
         return AccountRequest.builder()
                 .accountType("Savings")
-                .currency("NGN")
+                .currency("")
                 .customerPhone("0983")
                 .build();
     }
@@ -179,6 +179,13 @@ public static CustomerRequest customerData(){
                 .accountNumber(getAccountNumber())
                 .enableAccount(false)
                 .customerPhone(getCustomerPhone())
+                .build();
+    }
+    public static BlockAccountRequest blockInvalidAccount(){
+        return BlockAccountRequest.builder()
+                .accountNumber("")
+                .enableAccount(false)
+                .customerPhone("")
                 .build();
     }
     public static AccountsResponse retrieveAccount(){
