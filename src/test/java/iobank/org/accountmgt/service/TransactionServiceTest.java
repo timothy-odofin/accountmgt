@@ -1,4 +1,4 @@
-package iobank.org.accountmgt.integration;
+package iobank.org.accountmgt.service;
 
 import iobank.org.accountmgt.exception.AccountSuspendedException;
 import iobank.org.accountmgt.exception.BadRequestException;
@@ -11,7 +11,6 @@ import iobank.org.accountmgt.model.response.Accounts;
 import iobank.org.accountmgt.model.response.ApiResponse;
 import iobank.org.accountmgt.model.response.Customer;
 import iobank.org.accountmgt.model.response.TransactionResponse;
-import iobank.org.accountmgt.service.TransactionService;
 import iobank.org.accountmgt.storage.LocalStorage;
 import iobank.org.accountmgt.validation.AppValidator;
 import lombok.extern.slf4j.Slf4j;

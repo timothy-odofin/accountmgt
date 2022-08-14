@@ -1,4 +1,4 @@
-package iobank.org.accountmgt.integration;
+package iobank.org.accountmgt.service;
 
 import com.google.gson.internal.LinkedTreeMap;
 import iobank.org.accountmgt.exception.BadRequestException;
@@ -13,7 +13,6 @@ import iobank.org.accountmgt.model.response.Accounts;
 import iobank.org.accountmgt.model.response.AccountsResponse;
 import iobank.org.accountmgt.model.response.ApiResponse;
 import iobank.org.accountmgt.model.response.CustomerResponse;
-import iobank.org.accountmgt.service.AccountService;
 import iobank.org.accountmgt.storage.LocalStorage;
 import iobank.org.accountmgt.validation.AppValidator;
 import lombok.extern.slf4j.Slf4j;

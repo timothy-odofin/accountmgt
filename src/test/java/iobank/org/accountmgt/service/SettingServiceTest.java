@@ -1,7 +1,6 @@
-package iobank.org.accountmgt.integration;
+package iobank.org.accountmgt.service;
 
 import iobank.org.accountmgt.model.response.ApiResponse;
-import iobank.org.accountmgt.service.SettingService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
