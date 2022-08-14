@@ -1,12 +1,6 @@
 package iobank.org.accountmgt.integration;
 
-import iobank.org.accountmgt.mapper.ModelMapper;
-import iobank.org.accountmgt.model.DataUtils;
-import iobank.org.accountmgt.model.request.DepositRequest;
-import iobank.org.accountmgt.model.response.Accounts;
 import iobank.org.accountmgt.model.response.ApiResponse;
-import iobank.org.accountmgt.model.response.Customer;
-import iobank.org.accountmgt.model.response.TransactionResponse;
 import iobank.org.accountmgt.service.SettingService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -18,19 +12,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
-import java.util.Optional;
 
 import static iobank.org.accountmgt.model.RestMapper.mapFromJson;
-import static iobank.org.accountmgt.model.RestMapper.mapToJson;
 import static iobank.org.accountmgt.utils.SettingEndpoints.*;
 import static iobank.org.accountmgt.utils.TestApiCode.OKAY;
 import static iobank.org.accountmgt.utils.TestMessages.SUCCESS;
-import static iobank.org.accountmgt.utils.TransactionEndpoints.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
