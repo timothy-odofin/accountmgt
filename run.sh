@@ -3,7 +3,7 @@ echo "Running integration and unit testing"
 mvn verify -Pfailsafe
 
 echo "Building artifact"
-mvn clean install
+mvn clean install -DskipTests
 
 echo "docker-compose operations"
  docker-compose down

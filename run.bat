@@ -8,7 +8,7 @@ REM Integration testing
 call mvn verify -Pfailsafe
 
 REM Building artifacts
-call mvn clean install
+call mvn clean install -DskipTests
 
 REM shutdown or stop any previous docker-compose that is running
 call docker-compose down
