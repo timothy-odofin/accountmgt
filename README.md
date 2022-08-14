@@ -1,7 +1,7 @@
 # Account Management: IoBank
 
 NB: This is just a proof of concept, in-memory storage was used as directed.
-This application is simple account management system that outlines the basic process of a bank, it explains the basic type of transaction and the how accounts are created using the phone number and some other information, deposit and withdrawal of transactions.
+This application is simple account management system that outlines the basic process of a bank, it explains the basic type of transaction and how accounts are created using the phone number and some other information, deposit and withdrawal of transactions.
 
 This application uses Spring / Spring Boot and Java, using Java Collections framework such as Maps, List etc. as the data storage.
 
